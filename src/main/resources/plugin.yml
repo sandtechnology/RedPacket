@@ -1,0 +1,20 @@
+name: RedPacket
+version: ${project.version}
+main: sandtechnology.jielong.RedPacketPlugin
+prefix: JieLong
+authors: [sandtechnology]
+description: RedPacket
+softdepend:
+  - Vault
+commands:
+  RedPacket:
+    permission: RedPacket
+    description: wwww
+    usage: www
+    aliases:
+      - fhb
+      - RP
+      - rp
+permissions:
+  RedPacket:
+    default: true
