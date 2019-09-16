@@ -144,6 +144,7 @@ public class CommandHandler implements TabExecutor {
                                 Bukkit.getScheduler().runTaskAsynchronously(getInstance(),()-> {
                                     if (getSessionManager().getSession(player).getBuilder().isValid()) {
                                         RedPacket redPacket = getSessionManager().getSession(player).create();
+                                        Bukkit.getScheduler().runTask(getInstance(),()->broadcastRedPacket(ChatColor.GREEN+""+ "玩家" + ChatColor.GOLD + player.getName() + ChatColor.GREEN + "发了一个" + redPacket.getType().getName() + "！",""));
                                         ComponentBuilder componentBuilder = new ComponentBuilder(ChatColor.GREEN + "玩家" + ChatColor.GOLD + player.getName() + ChatColor.GREEN + "发了一个" + redPacket.getType().getName() + "！  （" + redPacket.getType().getExtraDataName() + "：" + redPacket.getExtraData() + "）");
                                         switch (redPacket.getType()) {
                                             case CommonRedPacket:

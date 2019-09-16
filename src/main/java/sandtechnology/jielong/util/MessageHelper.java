@@ -5,7 +5,9 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -46,6 +48,12 @@ public class MessageHelper {
             componentMassageMap.put(uuid, new ArrayList<>(Collections.singleton(massage)));
         }
     }
+    public static void broadcastRedPacket(String title,String subtitle){
+        getServer().getOnlinePlayers().forEach(player->{
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP,100,1);
+            player.sendTitle(title,subtitle,-1,-1,-1);
+        });
+    }
 
     public static void broadcastMsg(ChatColor color, String msg) {
         getServer().broadcastMessage(ChatColor.GREEN + "[红包]" + color + msg);
@@ -79,24 +87,24 @@ public class MessageHelper {
 
     public static void setStatus(boolean status) {
         Path path = getInstance().getDataFolder().toPath().resolve("PlayerData.json");
-        try {
 
             if (status) {
                 if (Files.exists(path)) {
-                    FromJson(Files.readAllLines(path));
+                    try {
+                        FromJson(Files.readAllLines(path));
+                    }
+                    catch (IOException ex) {
+                            throw new RuntimeException("无法加载将要发送给玩家的消息！");
+                        }
                 }
             } else {
-                if (!Files.exists(path)) {
-                    Files.createFile(path);
+                try (FileWriter fileWriter = new FileWriter(Files.exists(path)? path.toFile():Files.createFile(path).toFile(), false)){
+                    fileWriter.write(getJson());
+                }catch (IOException e){
+                    throw new RuntimeException("无法保存将要发送给玩家的消息！");
                 }
-                FileWriter fileWriter = new FileWriter(path.toFile(), false);
-                fileWriter.write(getJson());
-                fileWriter.close();
             }
-        } catch (IOException ex) {
-            throw new RuntimeException("无法加载/保存将要发送给玩家的消息！");
         }
-    }
 
     public static void FromJson(List<String> json) {
         if(json.size()==2) {
