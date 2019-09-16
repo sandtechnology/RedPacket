@@ -2,7 +2,6 @@ package sandtechnology.jielong.session;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import sandtechnology.jielong.RedPacketPlugin;
 import sandtechnology.jielong.redpacket.RedPacket;
 import sandtechnology.jielong.util.EcoPerHelper;
 import sandtechnology.jielong.util.OperatorHelper;
@@ -15,10 +14,11 @@ import static sandtechnology.jielong.util.MessageHelper.sendSimpleMsg;
 import java.util.UUID;
 
 public class CreateSession {
-    public enum State {Init,WaitAmount,WaitMoney,WaitGiveType,WaitType,WaitExtra,WaitGiver,Cancel};
-    private RedPacket.Builder builder;
-    private UUID playerUUID;
-    private volatile long expiredTime;
+    public enum State {Init,WaitAmount,WaitMoney,WaitGiveType,WaitType,WaitExtra,WaitGiver,Cancel}
+
+    private final RedPacket.Builder builder;
+    private final UUID playerUUID;
+    private final long expiredTime;
     private State state;
 
     CreateSession(Player player){

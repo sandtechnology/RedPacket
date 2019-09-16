@@ -11,8 +11,8 @@ import static sandtechnology.jielong.RedPacketPlugin.getInstance;
 
 public class RedPacketManager {
 
-    private static RedPacketManager redPacketManager = new RedPacketManager();
-    private List<RedPacket> redPackets = new CopyOnWriteArrayList<>();
+    private static final RedPacketManager redPacketManager = new RedPacketManager();
+    private final List<RedPacket> redPackets = new CopyOnWriteArrayList<>();
 
     public static RedPacketManager getRedPacketManager() {
         return redPacketManager;

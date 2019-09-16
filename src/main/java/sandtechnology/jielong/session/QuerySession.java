@@ -1,4 +1,4 @@
 package sandtechnology.jielong.session;
 
-public class QuerySession {
+class QuerySession {
 }

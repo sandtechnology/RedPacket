@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import sandtechnology.jielong.util.EcoPerHelper;
 import sandtechnology.jielong.util.IdiomManager;
 import sandtechnology.jielong.util.OperatorHelper;
 
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 import static sandtechnology.jielong.RedPacketPlugin.getDatabaseManager;
 import static sandtechnology.jielong.RedPacketPlugin.getInstance;
 import static sandtechnology.jielong.util.EcoPerHelper.getEco;
-import static sandtechnology.jielong.util.IdiomManager.getRandomIdiom;
 import static sandtechnology.jielong.util.IdiomManager.isValidSequence;
 import static sandtechnology.jielong.util.JsonHelper.getGson;
 import static sandtechnology.jielong.util.MessageHelper.broadcastMsg;
@@ -51,7 +49,7 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
     private int money;
     private int amount;
     private String extraData;
-    private long expireTime;
+    private final long expireTime;
     private boolean expired;
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("YYYY/MM/dd HH:dd:ss.SSS O");
     /**
@@ -123,11 +121,11 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
         return list;
     }
 
-    public static int boolToInt(boolean bool) {
+    private static int boolToInt(boolean bool) {
         return bool ? 1 : 0;
     }
 
-    public static boolean boolFromInt(int i) {
+    private static boolean boolFromInt(int i) {
         return i == 1;
     }
 
@@ -206,7 +204,7 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
         return divide(money, 100);
     }
 
-    public int getAmount() {
+    private int getAmount() {
         return amount + moneyMap.size();
     }
 
@@ -321,13 +319,13 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
     public enum GiveType {
         LuckyAmount("拼手气"),
         FixAmount("固定数值");
-        String name;
+        final String name;
 
         GiveType(String name) {
             this.name = name;
         }
 
-        public String getName() {
+        String getName() {
             return name;
         }
     }
@@ -336,8 +334,8 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
         CommonRedPacket("普通红包","祝福语"),
         JieLongRedPacket("接龙红包","成语"),
         PasswordRedPacket("口令红包","口令");
-        String name;
-        String extraDataName;
+        final String name;
+        final String extraDataName;
 
         RedPacketType(String name,String extraDataName) {
             this.name = name;
@@ -387,12 +385,12 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
             return this;
         }
 
-        public Builder expired(boolean expired) {
+        Builder expired(boolean expired) {
             this.expired = expired;
             return this;
         }
 
-        public Builder expireTime(long expireTime) {
+        Builder expireTime(long expireTime) {
             this.expireTime = expireTime;
             return this;
         }
@@ -439,17 +437,17 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
             return this;
         }
 
-        public Builder uuid(UUID uuid) {
+        Builder uuid(UUID uuid) {
             this.uuid = uuid;
             return this;
         }
 
-        public Builder timeZone(ZoneId timeZone) {
+        Builder timeZone(ZoneId timeZone) {
             this.timeZone = timeZone;
             return this;
         }
 
-        public Builder moneyMap(Map<UUID, Double> map) {
+        Builder moneyMap(Map<UUID, Double> map) {
             this.moneyMap=map;
             return this;
         }

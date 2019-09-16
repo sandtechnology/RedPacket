@@ -7,7 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -21,10 +20,10 @@ import static sandtechnology.jielong.RedPacketPlugin.getInstance;
 import static sandtechnology.jielong.util.JsonHelper.getGson;
 
 public class MessageHelper {
-    private static Map<UUID, List<String>> massageMap = new HashMap<>();
-    private static Map<UUID, List<BaseComponent[]>> componentMassageMap = new HashMap<>();
-    private static Type massageMapType = new TypeToken<Map<UUID, List<String>>>() {}.getType();
-    private static Type componentMassageMapType=new TypeToken<Map<UUID, List<BaseComponent[]>>>() {}.getType();
+    private static final Map<UUID, List<String>> massageMap = new HashMap<>();
+    private static final Map<UUID, List<BaseComponent[]>> componentMassageMap = new HashMap<>();
+    private static final Type massageMapType = new TypeToken<Map<UUID, List<String>>>() {}.getType();
+    private static final Type componentMassageMapType=new TypeToken<Map<UUID, List<BaseComponent[]>>>() {}.getType();
 
     private MessageHelper() {
     }
@@ -33,7 +32,7 @@ public class MessageHelper {
         return massageMap;
     }
 
-    public static void addMassage(UUID uuid, String massage) {
+    private static void addMassage(UUID uuid, String massage) {
         if (massageMap.containsKey(uuid)) {
             massageMap.get(uuid).add(massage);
         } else {
@@ -41,7 +40,7 @@ public class MessageHelper {
         }
     }
 
-    public static void addMassage(UUID uuid, BaseComponent...massage) {
+    private static void addMassage(UUID uuid, BaseComponent... massage) {
         if (massageMap.containsKey(uuid)) {
             componentMassageMap.get(uuid).add(massage);
         } else {
@@ -106,14 +105,14 @@ public class MessageHelper {
             }
         }
 
-    public static void FromJson(List<String> json) {
+    private static void FromJson(List<String> json) {
         if(json.size()==2) {
             massageMap.putAll(getGson().fromJson(json.get(0), massageMapType));
             componentMassageMap.putAll(getGson().fromJson(json.get(1), componentMassageMapType));
         }
     }
 
-    public static String getJson() {
+    private static String getJson() {
         return getGson().toJson(massageMap)+"\n"+getGson().toJson(componentMassageMap);
     }
 }

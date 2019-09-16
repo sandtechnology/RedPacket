@@ -1,6 +1,5 @@
 package sandtechnology.jielong.command;
 
-import com.sun.deploy.security.SelectableSecurityManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
@@ -11,13 +10,10 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import sandtechnology.jielong.redpacket.RedPacket;
 import sandtechnology.jielong.session.CreateSession;
-import sandtechnology.jielong.session.SessionManager;
 import sandtechnology.jielong.util.IdiomManager;
 import sandtechnology.jielong.util.RedPacketManager;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static sandtechnology.jielong.RedPacketPlugin.*;
@@ -25,7 +21,7 @@ import static sandtechnology.jielong.session.SessionManager.getSessionManager;
 import static sandtechnology.jielong.util.MessageHelper.*;
 
 public class CommandHandler implements TabExecutor {
-    private static CommandHandler commandHandler = new CommandHandler();
+    private static final CommandHandler commandHandler = new CommandHandler();
 
     public static CommandHandler getCommandHandler() {
         return commandHandler;
@@ -34,7 +30,7 @@ public class CommandHandler implements TabExecutor {
 
 
 
-    public boolean checkArgs(String[] args,int length,CommandSender sender){
+    private boolean checkArgs(String[] args, int length, CommandSender sender){
         if(args.length>=length)
         {
             return true;
@@ -44,7 +40,7 @@ public class CommandHandler implements TabExecutor {
             return false;
         }
     }
-    public boolean checkSessionAndSetState(CommandSender sender,CreateSession.State state){
+    private boolean checkSessionAndSetState(CommandSender sender, CreateSession.State state){
         if(getSessionManager().hasSession((Player)sender)&&getSessionManager().getSession((Player)sender).setState(state)){
             return true;
         }else {

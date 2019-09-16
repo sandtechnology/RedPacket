@@ -6,7 +6,7 @@ import java.util.*;
 
 import static sandtechnology.jielong.RedPacketPlugin.getDatabaseManager;
 
-public class DatabaseTest {
+class DatabaseTest {
     public static void main(String[] args) {
         AbstractDatabaseManager abstractDatabaseManager = getDatabaseManager();
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {

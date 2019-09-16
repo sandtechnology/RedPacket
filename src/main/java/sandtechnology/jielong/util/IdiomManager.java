@@ -21,8 +21,8 @@ import static sandtechnology.jielong.RedPacketPlugin.log;
 
 public class IdiomManager {
 
-    private static Map<String, POJOIdiom> idiomMap = new HashMap<>();
-    private static List<String> idiomList = new ArrayList<>();
+    private static final Map<String, POJOIdiom> idiomMap = new HashMap<>();
+    private static final List<String> idiomList = new ArrayList<>();
 
     private IdiomManager() {
     }

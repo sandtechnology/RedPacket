@@ -6,9 +6,7 @@ import org.bukkit.entity.Player;
 
 import java.util.logging.Level;
 
-import static org.bukkit.Bukkit.getPluginManager;
 import static org.bukkit.Bukkit.getServer;
-import static sandtechnology.jielong.RedPacketPlugin.getInstance;
 import static sandtechnology.jielong.RedPacketPlugin.log;
 
 public class EcoPerHelper {

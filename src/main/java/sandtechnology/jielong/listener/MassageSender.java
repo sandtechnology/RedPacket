@@ -13,7 +13,7 @@ import static sandtechnology.jielong.util.MessageHelper.sendServiceMsg;
 /**
  * 自动在上线时发送离线时发送的消息
  */
-public class MassageSender implements Listener {
+class MassageSender implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {

@@ -1,7 +1,5 @@
 package sandtechnology.jielong.database;
 
-import org.bukkit.Bukkit;
-
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
@@ -16,7 +14,7 @@ public class SqliteManager extends AbstractDatabaseManager {
     }
 
     @Override
-    public void setup(String tableName) {
+    void setup(String tableName) {
         try{
             this.tableName = tableName;
             connection = DriverManager.getConnection("jdbc:sqlite:" + getInstance().getDataFolder().toPath().resolve(config().getString("Database.FileName")).toString());

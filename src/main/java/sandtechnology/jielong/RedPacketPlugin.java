@@ -1,6 +1,5 @@
 package sandtechnology.jielong;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import sandtechnology.jielong.command.CommandHandler;

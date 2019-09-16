@@ -9,8 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SessionManager {
 
 
-    private static SessionManager sessionManager=new SessionManager();
-    private Map<UUID,CreateSession> sessions=new ConcurrentHashMap<>();
+    private static final SessionManager sessionManager=new SessionManager();
+    private final Map<UUID,CreateSession> sessions=new ConcurrentHashMap<>();
 
     public static SessionManager getSessionManager() {
         return sessionManager;

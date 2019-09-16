@@ -1,12 +1,9 @@
 package sandtechnology.jielong.database;
 
-import org.bukkit.Bukkit;
-
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import static sandtechnology.jielong.RedPacketPlugin.config;
-import static sandtechnology.jielong.RedPacketPlugin.getInstance;
 
 public class MysqlManager extends AbstractDatabaseManager {
 

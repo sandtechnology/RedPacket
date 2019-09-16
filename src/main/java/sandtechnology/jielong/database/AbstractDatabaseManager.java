@@ -12,20 +12,20 @@ import java.util.TimerTask;
 
 public abstract class AbstractDatabaseManager {
 
-    protected final Timer timer = new Timer();
-    protected Connection connection;
-    protected String tableName;
-    protected volatile boolean commiting;
-    protected volatile boolean running;
+    private final Timer timer = new Timer();
+    Connection connection;
+    String tableName;
+    private volatile boolean commiting;
+    private volatile boolean running;
 
-    protected void sleep() {
+    private void sleep() {
         try {
             Thread.sleep(100L);
         } catch (InterruptedException ignored) {
         }
     }
 
-    protected void executeUpdate(String sql) {
+    void executeUpdate(String sql) {
         try {
             while (commiting) {
                 //System.out.println("Waiting commit");
@@ -39,7 +39,7 @@ public abstract class AbstractDatabaseManager {
 
     abstract void setup(String tableName);
 
-    protected ResultSet executeQuery(String sql) {
+    private ResultSet executeQuery(String sql) {
         try {
             return connection.createStatement().executeQuery(sql);
         } catch (SQLException ex) {
@@ -48,7 +48,7 @@ public abstract class AbstractDatabaseManager {
     }
 
 
-    protected void startCommitTimer() {
+    void startCommitTimer() {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -81,7 +81,7 @@ public abstract class AbstractDatabaseManager {
         }
     }
 
-    protected synchronized void commit() {
+    private synchronized void commit() {
         try {
             commiting = true;
             connection.commit();
@@ -119,7 +119,7 @@ public abstract class AbstractDatabaseManager {
         return getNext(player, amount, 0);
     }
 
-    public List<RedPacket> getNext(Player player, int amount, int offset) {
+    private List<RedPacket> getNext(Player player, int amount, int offset) {
         long time = System.currentTimeMillis();
         ResultSet resultSet = executeQuery("Select * from " + tableName + " where playerUUID=='" + player.getUniqueId().toString() + "' order by expireTime desc LIMIT " + amount + " OFFSET " + offset);
        // System.out.println("Query Time:" + (System.currentTimeMillis() - time) + " ms");

@@ -25,10 +25,10 @@ import org.bukkit.util.Vector;
 import java.net.InetSocketAddress;
 import java.util.*;
 
-public class FakePlayer implements Player {
+class FakePlayer implements Player {
 
-    private UUID uuid;
-    private String name;
+    private final UUID uuid;
+    private final String name;
 
     FakePlayer(String name) {
         this.uuid = UUID.nameUUIDFromBytes(name.getBytes());

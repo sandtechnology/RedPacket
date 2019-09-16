@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 
 public class OperatorHelper {
-    private static MathContext mathContext = MathContext.DECIMAL32;
+    private static final MathContext mathContext = MathContext.DECIMAL32;
 
     private OperatorHelper() {
     }

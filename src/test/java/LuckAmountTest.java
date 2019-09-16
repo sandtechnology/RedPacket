@@ -1,4 +1,3 @@
-import sandtechnology.jielong.database.AbstractDatabaseManager;
 import sandtechnology.jielong.redpacket.RedPacket;
 
 import java.util.Random;
@@ -9,7 +8,7 @@ import static sandtechnology.jielong.util.OperatorHelper.multiply;
 import static sandtechnology.jielong.util.OperatorHelper.toTwoPrecision;
 
 
-public class LuckAmountTest {
+class LuckAmountTest {
     public static void main(String[] args) {
         int testNum = 0;
         long time;
