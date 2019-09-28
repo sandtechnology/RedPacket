@@ -96,7 +96,7 @@ public abstract class AbstractDatabaseManager {
     }
 
     public void delete(RedPacket redPacket) {
-        executeUpdate("DELETE FROM " + tableName + " Where UUID==" + redPacket.getUUID().toString());
+        executeUpdate("DELETE FROM " + tableName + " Where UUID=" + redPacket.getUUID().toString());
     }
 
 
@@ -106,7 +106,7 @@ public abstract class AbstractDatabaseManager {
 
     public List<RedPacket> getValid() {
         long time = System.currentTimeMillis();
-        ResultSet resultSet = executeQuery("Select * from " + tableName + " where expired==0 and amount!=0");
+        ResultSet resultSet = executeQuery("Select * from " + tableName + " where expired=0 and amount!=0");
         //System.out.println("Init Query Time:" + (System.currentTimeMillis() - time) + " ms");
         return RedPacket.fromSQL(resultSet);
     }
@@ -121,7 +121,7 @@ public abstract class AbstractDatabaseManager {
 
     private List<RedPacket> getNext(Player player, int amount, int offset) {
         long time = System.currentTimeMillis();
-        ResultSet resultSet = executeQuery("Select * from " + tableName + " where playerUUID=='" + player.getUniqueId().toString() + "' order by expireTime desc LIMIT " + amount + " OFFSET " + offset);
+        ResultSet resultSet = executeQuery("Select * from " + tableName + " where playerUUID='" + player.getUniqueId().toString() + "' order by expireTime desc LIMIT " + amount + " OFFSET " + offset);
        // System.out.println("Query Time:" + (System.currentTimeMillis() - time) + " ms");
         return RedPacket.fromSQL(resultSet);
     }

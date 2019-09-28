@@ -5,6 +5,7 @@ import net.md_5.bungee.api.chat.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import sandtechnology.jielong.util.IdiomManager;
 import sandtechnology.jielong.util.OperatorHelper;
@@ -244,6 +245,7 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
         double giveMoney = multiply(value, 0.01);
         getEco().depositPlayer(player, giveMoney);
         moneyMap.put(player.getUniqueId(), giveMoney);
+        Bukkit.getScheduler().runTask(getInstance(),()->player.playSound(player.getLocation(), Sound.ENTITY_CAT_AMBIENT,100,1));
         broadcastMsg(ChatColor.YELLOW, "玩家" +ChatColor.GOLD+ player.getName() +ChatColor.YELLOW+ "抢了" +ChatColor.GOLD+ this.player.getName() + ChatColor.YELLOW+"的红包，抢到了" + ChatColor.GOLD+giveMoney+ChatColor.YELLOW+ "元");
         amount--;
         getDatabaseManager().update(this);

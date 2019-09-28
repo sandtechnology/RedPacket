@@ -14,6 +14,8 @@ public class MysqlManager extends AbstractDatabaseManager {
     @Override
     void setup(String tableName) {
         try {
+            this.tableName = tableName;
+            String argument=config().getString("Database.MySQLArgument");
             connection = DriverManager.getConnection(
                     "jdbc:mysql://"
                             + config().getString("Database.IP")
@@ -21,14 +23,15 @@ public class MysqlManager extends AbstractDatabaseManager {
                             + config().getInt("Database.Port")
                             + "/"
                             + config().getString("Database.DatabaseName")
-                            + config().getString("Database.MySQLArgument")
+                            + (argument.equals("null") ? "":argument)
                     , config().getString("Database.UserName")
                     , config().getString("Database.Password")
             );
+            //https://techjourney.net/mysql-error-1170-42000-blobtext-column-used-in-key-specification-without-a-key-length/
             executeUpdate(
                     "create table if not exists " + tableName + " (" +
-                            "UUID TEXT PRIMARY KEY," +
-                            "playerUUID TEXT NOT NULL," +
+                            "UUID CHAR(128) PRIMARY KEY," +
+                            "playerUUID CHAR(128) NOT NULL," +
                             "giveType TEXT NOT NULL," +
                             "RedPacketType TEXT NOT NULL," +
                             "amount INTEGER NOT NULL," +

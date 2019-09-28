@@ -140,17 +140,17 @@ public class CommandHandler implements TabExecutor {
                                 Bukkit.getScheduler().runTaskAsynchronously(getInstance(),()-> {
                                     if (getSessionManager().getSession(player).getBuilder().isValid()) {
                                         RedPacket redPacket = getSessionManager().getSession(player).create();
-                                        Bukkit.getScheduler().runTask(getInstance(),()->broadcastRedPacket(ChatColor.GREEN+""+ "玩家" + ChatColor.GOLD + player.getName() + ChatColor.GREEN + "发了一个" + redPacket.getType().getName() + "！",""));
+                                        Bukkit.getScheduler().runTask(getInstance(),()->broadcastRedPacket(ChatColor.GREEN+"抢红包啦！",ChatColor.GREEN+""+ "玩家" + ChatColor.GOLD + player.getName() + ChatColor.GREEN + "发了一个" + redPacket.getType().getName() + "！"));
                                         ComponentBuilder componentBuilder = new ComponentBuilder(ChatColor.GREEN + "玩家" + ChatColor.GOLD + player.getName() + ChatColor.GREEN + "发了一个" + redPacket.getType().getName() + "！  （" + redPacket.getType().getExtraDataName() + "：" + redPacket.getExtraData() + "）");
                                         switch (redPacket.getType()) {
                                             case CommonRedPacket:
-                                                broadcastMsg(componentBuilder.append(ChatColor.GREEN + "点击这里领取").underlined(true).event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/redpacket get " + redPacket.getUUID().toString())).create());
+                                                broadcastMsg(componentBuilder.append(" "+ChatColor.GREEN +ChatColor.UNDERLINE.toString()+ "点击这里领取").event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/redpacket get " + redPacket.getUUID().toString())).create());
                                                 break;
                                             case PasswordRedPacket:
-                                                broadcastMsg(componentBuilder.append(ChatColor.GREEN + "点击这里领取").underlined(true).event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, redPacket.getExtraData())).create());
+                                                broadcastMsg(componentBuilder.append(" "+ChatColor.GREEN + ChatColor.UNDERLINE.toString()+"点击这里领取").event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, redPacket.getExtraData())).create());
                                                 break;
                                             case JieLongRedPacket:
-                                                broadcastMsg(componentBuilder.append(ChatColor.GREEN + "下一个成语的音节为" + IdiomManager.getIdiomPinyin(redPacket.getExtraData())).underlined(true).create());
+                                                broadcastMsg(componentBuilder.append(ChatColor.GREEN + "下一个成语的音节为 " + IdiomManager.getIdiomPinyin(ChatColor.UNDERLINE.toString()+redPacket.getExtraData())).create());
                                         }
                                     } else {
                                         sendSimpleMsg(sender, ChatColor.RED, "该红包不符合创建要求/余额不足！");
