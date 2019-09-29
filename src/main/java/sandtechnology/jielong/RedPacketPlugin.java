@@ -7,7 +7,7 @@ import sandtechnology.jielong.database.AbstractDatabaseManager;
 import sandtechnology.jielong.database.MysqlManager;
 import sandtechnology.jielong.database.SqliteManager;
 import sandtechnology.jielong.listener.ChatListener;
-import sandtechnology.jielong.util.EcoPerHelper;
+import sandtechnology.jielong.util.EcoAndPermissionHelper;
 import sandtechnology.jielong.util.IdiomManager;
 import sandtechnology.jielong.util.MessageHelper;
 import sandtechnology.jielong.util.RedPacketManager;
@@ -43,7 +43,7 @@ public class RedPacketPlugin extends JavaPlugin {
             saveDefaultConfig();
             getConfig();
             getLogger().info("初始化插件...");
-            EcoPerHelper.setup();
+            EcoAndPermissionHelper.setup();
             IdiomManager.setup();
             if (config().getString("Database.Type").equalsIgnoreCase("sqlite")) {
                 databaseManager = new SqliteManager(config().getString("Database.TableName"));

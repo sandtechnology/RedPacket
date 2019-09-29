@@ -1,7 +1,10 @@
 package sandtechnology.jielong.redpacket;
 
 import com.google.gson.reflect.TypeToken;
-import net.md_5.bungee.api.chat.*;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -21,7 +24,8 @@ import java.util.stream.Collectors;
 
 import static sandtechnology.jielong.RedPacketPlugin.getDatabaseManager;
 import static sandtechnology.jielong.RedPacketPlugin.getInstance;
-import static sandtechnology.jielong.util.EcoPerHelper.getEco;
+import static sandtechnology.jielong.util.EcoAndPermissionHelper.canGet;
+import static sandtechnology.jielong.util.EcoAndPermissionHelper.getEco;
 import static sandtechnology.jielong.util.IdiomManager.isValidSequence;
 import static sandtechnology.jielong.util.JsonHelper.getGson;
 import static sandtechnology.jielong.util.MessageHelper.broadcastMsg;
@@ -160,7 +164,7 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
      */
     synchronized public void giveIfValid(Player player, String extra) {
         //排除不在可领取红包列表中的玩家
-        if(!givers.isEmpty()&&!givers.contains(player.getUniqueId())){
+        if (!givers.isEmpty() && !givers.contains(player.getUniqueId()) && canGet(player, type)) {
             return;
         }
 
@@ -427,7 +431,11 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
             return this;
         }
         public boolean isValid(){
-            return getEco().getBalance(player)>=money&&(amount > 0 &&money>0&& OperatorHelper.divide(money, amount) >= 0.01) && (type != RedPacketType.JieLongRedPacket || IdiomManager.isValidIdiom(extraData))&&getInstance().getConfig().getInt("RedPacket.MaxAmount")>=amount&&getInstance().getConfig().getDouble("RedPacket.MaxMoney")>=money;
+            return getEco().getBalance(player) >= money
+                    && (amount > 0 && money > 0 && OperatorHelper.divide(money, amount) >= 0.01)
+                    && (type != RedPacketType.JieLongRedPacket || IdiomManager.isValidIdiom(extraData))
+                    && getInstance().getConfig().getInt("RedPacket.MaxAmount") >= amount
+                    && getInstance().getConfig().getDouble("RedPacket.MaxMoney") >= money;
         }
 
         /**

@@ -16,8 +16,9 @@ import sandtechnology.jielong.util.RedPacketManager;
 import java.util.Arrays;
 import java.util.List;
 
-import static sandtechnology.jielong.RedPacketPlugin.*;
+import static sandtechnology.jielong.RedPacketPlugin.getInstance;
 import static sandtechnology.jielong.session.SessionManager.getSessionManager;
+import static sandtechnology.jielong.util.EcoAndPermissionHelper.canSet;
 import static sandtechnology.jielong.util.MessageHelper.*;
 
 public class CommandHandler implements TabExecutor {
@@ -65,14 +66,20 @@ public class CommandHandler implements TabExecutor {
                             case "type":
                                 switch (args[2].toLowerCase()) {
                                     case "normal":
-                                        getSessionManager().getSession(player).getBuilder().type(RedPacket.RedPacketType.CommonRedPacket);
+                                        if (canSet(player, RedPacket.RedPacketType.CommonRedPacket)) {
+                                            getSessionManager().getSession(player).getBuilder().type(RedPacket.RedPacketType.CommonRedPacket);
+                                        }
                                         break;
                                     case "password":
-                                        getSessionManager().getSession(player).getBuilder().type(RedPacket.RedPacketType.PasswordRedPacket);
+                                        if (canSet(player, RedPacket.RedPacketType.PasswordRedPacket)) {
+                                            getSessionManager().getSession(player).getBuilder().type(RedPacket.RedPacketType.PasswordRedPacket);
+                                        }
                                         break;
                                     case "jielong":
-                                        getSessionManager().getSession(player).getBuilder().type(RedPacket.RedPacketType.JieLongRedPacket);
-                                        getSessionManager().getSession(player).getBuilder().extraData(IdiomManager.getRandomIdiom());
+                                        if (canSet(player, RedPacket.RedPacketType.JieLongRedPacket)) {
+                                            getSessionManager().getSession(player).getBuilder().type(RedPacket.RedPacketType.JieLongRedPacket);
+                                            getSessionManager().getSession(player).getBuilder().extraData(IdiomManager.getRandomIdiom());
+                                        }
                                 }
                                 break;
                             case "givetype":

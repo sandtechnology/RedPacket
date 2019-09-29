@@ -3,17 +3,18 @@ package sandtechnology.jielong.util;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.entity.Player;
+import sandtechnology.jielong.redpacket.RedPacket;
 
 import java.util.logging.Level;
 
 import static org.bukkit.Bukkit.getServer;
 import static sandtechnology.jielong.RedPacketPlugin.log;
 
-public class EcoPerHelper {
+public class EcoAndPermissionHelper {
     static private Economy eco;
     static private Permission per;
 
-    private EcoPerHelper() {
+    private EcoAndPermissionHelper() {
     }
 
     public static void setup() {
@@ -47,5 +48,13 @@ public class EcoPerHelper {
 
     public static boolean hasPermission(Player sender, String perNode) {
         return per == null ? sender.hasPermission(perNode) : per.playerHas(sender, perNode);
+    }
+
+    public static boolean canSet(Player sender, RedPacket.RedPacketType redPacket) {
+        return hasPermission(sender, "redpacket.set." + redPacket.name().toLowerCase());
+    }
+
+    public static boolean canGet(Player sender, RedPacket.RedPacketType redPacket) {
+        return hasPermission(sender, "redpacket.get." + redPacket.name().toLowerCase());
     }
 }

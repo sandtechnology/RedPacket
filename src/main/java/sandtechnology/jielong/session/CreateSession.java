@@ -3,15 +3,15 @@ package sandtechnology.jielong.session;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import sandtechnology.jielong.redpacket.RedPacket;
-import sandtechnology.jielong.util.EcoPerHelper;
+import sandtechnology.jielong.util.EcoAndPermissionHelper;
 import sandtechnology.jielong.util.OperatorHelper;
 import sandtechnology.jielong.util.RedPacketManager;
 
-import static sandtechnology.jielong.RedPacketPlugin.*;
-import static sandtechnology.jielong.session.SessionManager.*;
-import static sandtechnology.jielong.util.MessageHelper.sendSimpleMsg;
-
 import java.util.UUID;
+
+import static sandtechnology.jielong.RedPacketPlugin.getInstance;
+import static sandtechnology.jielong.session.SessionManager.getSessionManager;
+import static sandtechnology.jielong.util.MessageHelper.sendSimpleMsg;
 
 public class CreateSession {
     public enum State {Init,WaitAmount,WaitMoney,WaitGiveType,WaitType,WaitExtra,WaitGiver,Cancel}
@@ -38,7 +38,7 @@ public class CreateSession {
     public RedPacket create(){
         SessionManager.getSessionManager().remove(this);
         RedPacket redPacket=builder.build();
-        EcoPerHelper.getEco().withdrawPlayer(redPacket.getPlayer(),redPacket.getMoney());
+        EcoAndPermissionHelper.getEco().withdrawPlayer(redPacket.getPlayer(), redPacket.getMoney());
         RedPacketManager.getRedPacketManager().add(redPacket);
         return redPacket;
     }
