@@ -3,17 +3,19 @@ package sandtechnology.redpacket.util;
 import com.google.gson.reflect.TypeToken;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.bukkit.Bukkit.getServer;
 import static sandtechnology.redpacket.RedPacketPlugin.getInstance;
@@ -23,7 +25,7 @@ public class MessageHelper {
     private static final Map<UUID, List<String>> massageMap = new HashMap<>();
     private static final Map<UUID, List<BaseComponent[]>> componentMassageMap = new HashMap<>();
     private static final Type massageMapType = new TypeToken<Map<UUID, List<String>>>() {}.getType();
-    private static final Type componentMassageMapType=new TypeToken<Map<UUID, List<BaseComponent[]>>>() {}.getType();
+    private static boolean loaded = false;
 
     private MessageHelper() {
     }
@@ -153,20 +155,19 @@ public class MessageHelper {
      */
     public static void setStatus(boolean status) {
         Path path = getInstance().getDataFolder().toPath().resolve("PlayerData.json");
-
         if (status) {
             if (Files.exists(path)) {
                 try {
                     FromJson(Files.readAllLines(path));
                 } catch (IOException ex) {
-                    throw new RuntimeException("无法加载将要发送给玩家的消息！");
+                    throw new RuntimeException("无法加载将要发送给玩家的消息！", ex);
                 }
             }
         } else {
-            try (FileWriter fileWriter = new FileWriter(Files.exists(path)? path.toFile():Files.createFile(path).toFile(), false)){
-                fileWriter.write(getJson());
+            try {
+                Files.write(path, getJson(), StandardCharsets.UTF_8);
             }catch (IOException e){
-                throw new RuntimeException("无法保存将要发送给玩家的消息！");
+                throw new RuntimeException("无法保存将要发送给玩家的消息！", e);
             }
         }
     }
@@ -175,17 +176,20 @@ public class MessageHelper {
      * 离线玩家信息反序列化方法
      * @param json 序列化后的内容
      */
+    @SuppressWarnings("unchecked")
     private static void FromJson(List<String> json) {
         if(json.size()==2) {
             massageMap.putAll(getGson().fromJson(json.get(0), massageMapType));
-            componentMassageMap.putAll(getGson().fromJson(json.get(1), componentMassageMapType));
+            ((Map<UUID, List<String>>) getGson().fromJson(json.get(1), massageMapType)).forEach((k, v) -> componentMassageMap.put(k, v.parallelStream().map(ComponentSerializer::parse).collect(Collectors.toList())));
         }
     }
 
     /**
      * 离线玩家信息序列化方法
      */
-    private static String getJson() {
-        return getGson().toJson(massageMap)+"\n"+getGson().toJson(componentMassageMap);
+    private static List<String> getJson() {
+        HashMap<UUID, List<String>> componentMap = new HashMap<>();
+        componentMassageMap.entrySet().parallelStream().forEach(e -> componentMap.put(e.getKey(), e.getValue().parallelStream().map(ComponentSerializer::toString).collect(Collectors.toList())));
+        return Arrays.asList(getGson().toJson(massageMap), getGson().toJson(componentMap));
     }
 }

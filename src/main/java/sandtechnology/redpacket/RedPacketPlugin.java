@@ -41,9 +41,10 @@ public class RedPacketPlugin extends JavaPlugin {
         getInstance().getLogger().log(level, String.format(msg, format));
     }
 
-    public static boolean reload() {
+    public boolean reload() {
         try {
             getInstance().reloadConfig();
+            updateConfig();
             IdiomManager.reload();
             return true;
         } catch (Exception e) {
@@ -79,6 +80,10 @@ public class RedPacketPlugin extends JavaPlugin {
     }
     @Override
     public void onEnable() {
+        if (startup) {
+            log(Level.WARNING, "检测到服务器重载，将使用重载逻辑！");
+            reload();
+        }
         try {
             instance = this;
             saveDefaultConfig();

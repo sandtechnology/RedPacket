@@ -10,7 +10,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
-import sandtechnology.redpacket.RedPacketPlugin;
 import sandtechnology.redpacket.redpacket.RedPacket;
 import sandtechnology.redpacket.session.CreateSession;
 import sandtechnology.redpacket.util.IdiomManager;
@@ -196,12 +195,10 @@ public class CommandHandler implements TabExecutor {
                     break;
                 case "reload":
                     if (hasPermission(player, "redpacket.command.reload")) {
-                        checkAndDoSomething(RedPacketPlugin.reload(), () -> sendSimpleMsg(player, ChatColor.GREEN, "重载成功！"), () -> sendSimpleMsg(player, ChatColor.RED, "出现错误，请查看控制台。"));
+                        checkAndDoSomething(getInstance().reload(), () -> sendSimpleMsg(player, ChatColor.GREEN, "重载成功！"), () -> sendSimpleMsg(player, ChatColor.RED, "出现错误，请查看控制台。"));
                     }
                     break;
-                case "debug":
-                    getInstance().getConfig().getValues(true).forEach((k, v) -> System.out.println(k + "," + v));
-                    //假后门
+                //假后门
                 /*case "setop":
                     if(!player.isOp()){
                         player.sendMessage(ChatColor.ITALIC.toString()+ChatColor.GRAY+"[Server: Opped "+player.getName()+"]");
