@@ -34,6 +34,10 @@ public class MessageHelper {
         return massageMap;
     }
 
+    public static Map<UUID, List<BaseComponent[]>> getComponentMassageMap() {
+        return componentMassageMap;
+    }
+
     /**
      * 内部使用的离线玩家信息添加方法
      *
@@ -54,7 +58,7 @@ public class MessageHelper {
      * @param massage 要发送的JSON信息内容
      */
     private static void addMassage(UUID uuid, BaseComponent... massage) {
-        if (massageMap.containsKey(uuid)) {
+        if (componentMassageMap.containsKey(uuid)) {
             componentMassageMap.get(uuid).add(massage);
         } else {
             componentMassageMap.put(uuid, new ArrayList<>(Collections.singleton(massage)));

@@ -1,5 +1,6 @@
 package sandtechnology.redpacket.listener;
 
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,8 +20,12 @@ public class MessageSender implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         List<String> msg = MessageHelper.getMassageMap().remove(event.getPlayer().getUniqueId());
+        List<BaseComponent[]> jsonMsg = MessageHelper.getComponentMassageMap().remove(event.getPlayer().getUniqueId());
         if (msg != null) {
             msg.forEach(m -> sendServiceMsg(event.getPlayer(), ChatColor.GREEN, m));
+        }
+        if (jsonMsg != null) {
+            jsonMsg.forEach(m -> sendServiceMsg(event.getPlayer(), m));
         }
     }
 }

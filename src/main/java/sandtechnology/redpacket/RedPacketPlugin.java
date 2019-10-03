@@ -20,7 +20,7 @@ public class RedPacketPlugin extends JavaPlugin {
 
     private static RedPacketPlugin instance;
     private static AbstractDatabaseManager databaseManager;
-    private static boolean startup;
+    private boolean startup;
 
     public static RedPacketPlugin getInstance() {
         return instance;

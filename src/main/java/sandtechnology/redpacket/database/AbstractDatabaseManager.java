@@ -68,7 +68,6 @@ public abstract class AbstractDatabaseManager {
 
     synchronized public void setRunning(boolean running) {
         this.running = running;
-        long time = System.currentTimeMillis();
         commit();
         if (!running) {
             close();

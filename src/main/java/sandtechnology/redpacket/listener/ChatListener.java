@@ -20,7 +20,6 @@ public class ChatListener implements Listener {
     private static final CreateSession.State[] inputNeededState = {CreateSession.State.WaitAmount, CreateSession.State.WaitExtra, CreateSession.State.WaitGiver, CreateSession.State.WaitMoney};
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-
         Player player=event.getPlayer();
         //判断是否在输入创建红包的数据
         if (getSessionManager().hasSession(player) && Arrays.stream(inputNeededState).anyMatch(state -> state == getSessionManager().getSession(player).getState())) {
