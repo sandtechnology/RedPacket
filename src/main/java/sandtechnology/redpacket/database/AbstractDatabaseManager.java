@@ -1,7 +1,7 @@
-package sandtechnology.jielong.database;
+package sandtechnology.redpacket.database;
 
 import org.bukkit.entity.Player;
-import sandtechnology.jielong.redpacket.RedPacket;
+import sandtechnology.redpacket.redpacket.RedPacket;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -48,6 +48,9 @@ public abstract class AbstractDatabaseManager {
     }
 
 
+    /**
+     * 定时commit
+     */
     void startCommitTimer() {
         timer.schedule(new TimerTask() {
             @Override
@@ -55,7 +58,7 @@ public abstract class AbstractDatabaseManager {
                 long time = System.currentTimeMillis();
                 if (running) {
                     commit();
-                   // System.out.println("commit! time cost: " + (System.currentTimeMillis() - time) + " ms");
+                    // System.out.println("commit! time cost: " + (System.currentTimeMillis() - time) + " ms");
                 } else {
                     timer.cancel();
                 }
@@ -104,6 +107,11 @@ public abstract class AbstractDatabaseManager {
         executeUpdate(redPacket.toUpdateSQL(tableName));
     }
 
+    /**
+     * 从数据库拉取可被领取的红包
+     *
+     * @return 可被领取的红包list
+     */
     public List<RedPacket> getValid() {
         long time = System.currentTimeMillis();
         ResultSet resultSet = executeQuery("Select * from " + tableName + " where expired=0 and amount!=0");

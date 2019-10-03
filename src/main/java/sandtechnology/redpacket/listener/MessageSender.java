@@ -1,19 +1,20 @@
-package sandtechnology.jielong.listener;
+package sandtechnology.redpacket.listener;
 
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import sandtechnology.jielong.util.MessageHelper;
+import sandtechnology.redpacket.util.MessageHelper;
 
 import java.util.List;
 
-import static sandtechnology.jielong.util.MessageHelper.sendServiceMsg;
+import static sandtechnology.redpacket.util.MessageHelper.sendServiceMsg;
 
 /**
  * 自动在上线时发送离线时发送的消息
+ * @see MessageHelper
  */
-class MassageSender implements Listener {
+public class MessageSender implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {

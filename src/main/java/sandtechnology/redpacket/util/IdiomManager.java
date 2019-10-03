@@ -1,4 +1,4 @@
-package sandtechnology.jielong.util;
+package sandtechnology.redpacket.util;
 
 import com.google.gson.Gson;
 
@@ -9,8 +9,8 @@ import java.text.Normalizer;
 import java.util.*;
 import java.util.logging.Level;
 
-import static sandtechnology.jielong.RedPacketPlugin.getInstance;
-import static sandtechnology.jielong.RedPacketPlugin.log;
+import static sandtechnology.redpacket.RedPacketPlugin.getInstance;
+import static sandtechnology.redpacket.RedPacketPlugin.log;
 
 //copy and merge form JieLong/src/main/java/top/seraphjack/jielong/idiom
 //https://github.com/SeraphJACK/JieLong
@@ -40,6 +40,12 @@ public class IdiomManager {
         Arrays.stream(idioms).forEach(i -> idiomMap.put(i.word, i));
         idiomList.addAll(idiomMap.keySet());
         log(Level.INFO, "成语数据库载入完成，花费了" + (System.currentTimeMillis() - startTime) + "毫秒。");
+    }
+
+    public static void reload() {
+        idiomMap.clear();
+        idiomList.clear();
+        setup();
     }
 
     public static boolean isValidIdiom(String idiom) {

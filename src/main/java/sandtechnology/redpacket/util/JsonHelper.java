@@ -1,8 +1,11 @@
-package sandtechnology.jielong.util;
+package sandtechnology.redpacket.util;
 
 import com.google.gson.Gson;
 
-public class JsonHelper<T> {
+/**
+ * 返回Gson实例的工具类
+ */
+public class JsonHelper {
     private static final Gson gson = new Gson();
 
     private JsonHelper() {

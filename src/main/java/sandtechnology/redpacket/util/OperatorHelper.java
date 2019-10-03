@@ -1,8 +1,11 @@
-package sandtechnology.jielong.util;
+package sandtechnology.redpacket.util;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+/**
+ * 精确计算工具类
+ */
 public class OperatorHelper {
     private static final MathContext mathContext = MathContext.DECIMAL32;
 

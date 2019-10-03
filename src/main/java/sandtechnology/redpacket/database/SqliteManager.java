@@ -1,10 +1,10 @@
-package sandtechnology.jielong.database;
+package sandtechnology.redpacket.database;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import static sandtechnology.jielong.RedPacketPlugin.config;
-import static sandtechnology.jielong.RedPacketPlugin.getInstance;
+import static sandtechnology.redpacket.RedPacketPlugin.config;
+import static sandtechnology.redpacket.RedPacketPlugin.getInstance;
 
 public class SqliteManager extends AbstractDatabaseManager {
 

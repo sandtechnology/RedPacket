@@ -1,11 +1,11 @@
-import sandtechnology.jielong.redpacket.RedPacket;
+import sandtechnology.redpacket.redpacket.RedPacket;
 
 import java.util.Random;
 import java.util.UUID;
 
-import static sandtechnology.jielong.RedPacketPlugin.getDatabaseManager;
-import static sandtechnology.jielong.util.OperatorHelper.multiply;
-import static sandtechnology.jielong.util.OperatorHelper.toTwoPrecision;
+import static sandtechnology.redpacket.RedPacketPlugin.getDatabaseManager;
+import static sandtechnology.redpacket.util.OperatorHelper.multiply;
+import static sandtechnology.redpacket.util.OperatorHelper.toTwoPrecision;
 
 
 class LuckAmountTest {
@@ -20,7 +20,7 @@ class LuckAmountTest {
             double randomMoney = Math.max(multiply(amount, multiply(randomDouble, random.nextInt(10))), amount);
             time = System.currentTimeMillis();
             System.out.print("#" + testNum + "|" + amount + "|" + randomDouble + "|" + randomMoney);
-            RedPacket redPacket = new RedPacket.Builder().money(randomMoney).amount(amount).extraData("233").player(new FakePlayer("Test")).build();
+            RedPacket redPacket = new RedPacket.Builder(new FakePlayer("Test")).money(randomMoney).amount(amount).extraData("233").build();
             getDatabaseManager().store(redPacket);
             for (; redPacket.getCurrentAmount() > 0; ) {
                 if (redPacket.getCurrentMoney() < 0) {

@@ -1,9 +1,9 @@
-package sandtechnology.jielong.database;
+package sandtechnology.redpacket.database;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import static sandtechnology.jielong.RedPacketPlugin.config;
+import static sandtechnology.redpacket.RedPacketPlugin.config;
 
 public class MysqlManager extends AbstractDatabaseManager {
 

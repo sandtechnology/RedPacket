@@ -1,4 +1,4 @@
-package sandtechnology.jielong.redpacket;
+package sandtechnology.redpacket.redpacket;
 
 import com.google.gson.reflect.TypeToken;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -10,8 +10,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import sandtechnology.jielong.util.IdiomManager;
-import sandtechnology.jielong.util.OperatorHelper;
+import sandtechnology.redpacket.util.IdiomManager;
+import sandtechnology.redpacket.util.OperatorHelper;
 
 import java.lang.reflect.Type;
 import java.sql.ResultSet;
@@ -20,18 +20,21 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static sandtechnology.jielong.RedPacketPlugin.getDatabaseManager;
-import static sandtechnology.jielong.RedPacketPlugin.getInstance;
-import static sandtechnology.jielong.util.EcoAndPermissionHelper.canGet;
-import static sandtechnology.jielong.util.EcoAndPermissionHelper.getEco;
-import static sandtechnology.jielong.util.IdiomManager.isValidSequence;
-import static sandtechnology.jielong.util.JsonHelper.getGson;
-import static sandtechnology.jielong.util.MessageHelper.broadcastMsg;
-import static sandtechnology.jielong.util.MessageHelper.sendServiceMsg;
-import static sandtechnology.jielong.util.OperatorHelper.*;
-import static sandtechnology.jielong.util.RedPacketManager.getRedPacketManager;
+import static sandtechnology.redpacket.RedPacketPlugin.getDatabaseManager;
+import static sandtechnology.redpacket.RedPacketPlugin.getInstance;
+import static sandtechnology.redpacket.util.EcoAndPermissionHelper.canGet;
+import static sandtechnology.redpacket.util.EcoAndPermissionHelper.getEco;
+import static sandtechnology.redpacket.util.IdiomManager.getIdiomPinyin;
+import static sandtechnology.redpacket.util.IdiomManager.isValidSequence;
+import static sandtechnology.redpacket.util.JsonHelper.getGson;
+import static sandtechnology.redpacket.util.MessageHelper.*;
+import static sandtechnology.redpacket.util.OperatorHelper.*;
+import static sandtechnology.redpacket.util.RedPacketManager.getRedPacketManager;
 
 /**
  *
@@ -126,6 +129,17 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
         return list;
     }
 
+    public boolean isLimitPlayer() {
+        return !givers.isEmpty();
+    }
+
+    public String getLimitPlayerList() {
+        return givers.parallelStream().map(Bukkit::getOfflinePlayer).map(OfflinePlayer::getName).collect(Collectors.joining(","));
+    }
+
+    public List<OfflinePlayer> getLimitPlayers() {
+        return givers.parallelStream().map(Bukkit::getOfflinePlayer).collect(Collectors.toList());
+    }
     private static int boolToInt(boolean bool) {
         return bool ? 1 : 0;
     }
@@ -165,6 +179,9 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
     synchronized public void giveIfValid(Player player, String extra) {
         //排除不在可领取红包列表中的玩家
         if (!givers.isEmpty() && !givers.contains(player.getUniqueId()) && canGet(player, type)) {
+            if (type == RedPacketType.CommonRedPacket) {
+                sendSimpleMsg(player, ChatColor.RED, "你无法领取此红包！");
+            }
             return;
         }
 
@@ -183,6 +200,10 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
                     break;
                 default:
                     giveMoney(player);
+            }
+        } else {
+            if (type == RedPacketType.CommonRedPacket) {
+                sendSimpleMsg(player, ChatColor.RED, "你已领取此红包！");
             }
         }
     }
@@ -250,12 +271,15 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
         getEco().depositPlayer(player, giveMoney);
         moneyMap.put(player.getUniqueId(), giveMoney);
         Bukkit.getScheduler().runTask(getInstance(),()->player.playSound(player.getLocation(), Sound.ENTITY_CAT_AMBIENT,100,1));
-        broadcastMsg(ChatColor.YELLOW, "玩家" +ChatColor.GOLD+ player.getName() +ChatColor.YELLOW+ "抢了" +ChatColor.GOLD+ this.player.getName() + ChatColor.YELLOW+"的红包，抢到了" + ChatColor.GOLD+giveMoney+ChatColor.YELLOW+ "元");
+        broadcastMsg(ChatColor.YELLOW,
+                "玩家" + ChatColor.GOLD + player.getName() +
+                        ChatColor.YELLOW + "抢了" + ChatColor.GOLD + this.player.getName() + ChatColor.YELLOW + "的红包" + "，抢到了" + ChatColor.GOLD + giveMoney + ChatColor.YELLOW + "元" + (type == RedPacketType.JieLongRedPacket ? "，下一个成语的音节是" + ChatColor.UNDERLINE + ChatColor.GREEN + getIdiomPinyin(extraData) : ""));
+
         amount--;
         getDatabaseManager().update(this);
         if (amount == 0) {
             getRedPacketManager().remove(this);
-            broadcastMsg(ChatColor.YELLOW, "玩家" +ChatColor.GOLD+ this.player.getName() +ChatColor.YELLOW+ "的红包已被抢完，" +ChatColor.GOLD+ moneyMap.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).map(x -> Bukkit.getServer().getOfflinePlayer(x.getKey()).getName()).orElse("无人") +ChatColor.YELLOW+"是运气王");
+            broadcastMsg(ChatColor.YELLOW, "玩家" + ChatColor.GOLD + this.player.getName() + ChatColor.YELLOW + "的红包已被抢完，" + ChatColor.GOLD + moneyMap.entrySet().parallelStream().max(Comparator.comparing(Map.Entry::getValue)).map(x -> Bukkit.getServer().getOfflinePlayer(x.getKey()).getName()).orElse("无人") + ChatColor.YELLOW + "是运气王");
         }
     }
 
@@ -340,6 +364,7 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
         CommonRedPacket("普通红包","祝福语"),
         JieLongRedPacket("接龙红包","成语"),
         PasswordRedPacket("口令红包","口令");
+
         final String name;
         final String extraDataName;
 
@@ -374,13 +399,37 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
         private RedPacketType type = RedPacketType.CommonRedPacket;
         private GiveType givetype = GiveType.LuckyAmount;
         private UUID uuid = UUID.randomUUID();
-        private String extraData;
+        //红包有效性检测以及提示信息
+        private static final LinkedHashMap<Predicate<Builder>, String> checkMap = new LinkedHashMap<>();
         private boolean expired;
         private Set<UUID> givers=new HashSet<>();
         private ZoneId timeZone=ZoneId.systemDefault();
         //过期时间
-        //即将迁移至配置文件
         private long expireTime = System.currentTimeMillis() + getInstance().getConfig().getLong("RedPacket.ExpiredTime");
+
+        //初始化
+        static {
+            checkMap.put((builder) -> builder.amount > 0, "红包数量必须大于0！");
+            checkMap.put((builder) -> builder.money > 0, "红包总额必须大于0！");
+            checkMap.put((builder) -> getEco().getBalance(builder.player) >= builder.money, "你的余额不足！");
+            checkMap.put((builder) -> OperatorHelper.divide(builder.money, builder.amount) >= 0.01, "红包平均最低金额不能低于0.01！");
+            checkMap.put((builder) -> builder.type != RedPacketType.JieLongRedPacket || IdiomManager.isValidIdiom(builder.extraData), "该成语无效！");
+            checkMap.put((builder) -> getInstance().getConfig().getDouble("RedPacket.MaxMoney") >= builder.money, "红包总额不能超出{MaxMoney}！");
+            checkMap.put((builder) -> getInstance().getConfig().getInt("RedPacket.MaxAmount") >= builder.amount, "红包数量不能超出{MaxAmount}！");
+            checkMap.put((builder) -> getInstance().getConfig().getDouble("RedPacket.MinMoney") <= builder.money, "红包总额不能小于{MinMoney}！");
+        }
+
+        private String extraData = "恭喜发财";
+
+
+        //内部创建红包方法
+        Builder() {
+        }
+
+        //外部创建红包方法
+        public Builder(Player player) {
+            this.player = player;
+        }
 
         public String getExtraDataInfo() {
             return type.getExtraDataName();
@@ -426,17 +475,24 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
             return this;
         }
 
-        public Builder player(OfflinePlayer player) {
+        Builder player(OfflinePlayer player) {
             this.player = player;
             return this;
         }
         public boolean isValid(){
-            return getEco().getBalance(player) >= money
-                    && (amount > 0 && money > 0 && OperatorHelper.divide(money, amount) >= 0.01)
-                    && (type != RedPacketType.JieLongRedPacket || IdiomManager.isValidIdiom(extraData))
-                    && getInstance().getConfig().getInt("RedPacket.MaxAmount") >= amount
-                    && getInstance().getConfig().getDouble("RedPacket.MaxMoney") >= money;
+            String result = checkMap.entrySet().stream().filter(e -> !e.getKey().test(this)).limit(1).map(Map.Entry::getValue).collect(Collectors.joining());
+            if (result.isEmpty()) {
+                return true;
+            } else {
+                Matcher matcher = Pattern.compile("\\{?([^{}]+)}+").matcher(result);
+                while (matcher.find()) {
+                    result = matcher.replaceAll(getInstance().getConfig().getString("RedPacket." + matcher.group(1)));
+                }
+                sendSimpleMsg(player.getPlayer(), ChatColor.RED, result);
+                return false;
+            }
         }
+
 
         /**
          * 为输入玩家名提供的方法
@@ -478,15 +534,18 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
 
         public BaseComponent[] getInfo(){
             HoverEvent tipsHoverEvent=new HoverEvent(HoverEvent.Action.SHOW_TEXT,new ComponentBuilder("点击此处来修改该项").create());
-           return new ComponentBuilder(ChatColor.GOLD+"要创建的红包信息\n")
-                   .append(ChatColor.GREEN+"红包类型："+ChatColor.YELLOW+type.getName()+"\n").underlined(true).event(tipsHoverEvent).event(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/redpacket query type"))
-                   .append(ChatColor.GREEN+"给予类型："+ChatColor.YELLOW+givetype.getName()+"\n").underlined(true).event(tipsHoverEvent).event(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/redpacket query givetype"))
-                   .append(ChatColor.GREEN+"领取人："+ChatColor.YELLOW+(givers.isEmpty() ? "所有人":givers.stream().map(Bukkit::getOfflinePlayer).map(OfflinePlayer::getName).collect(Collectors.joining(",")))+"\n").underlined(true).event(tipsHoverEvent).event(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/redpacket query giver"))
-                   .append(ChatColor.GREEN+"金额："+ChatColor.YELLOW+money+"\n").event(tipsHoverEvent).underlined(true).event(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/redpacket query money"))
-                   .append(ChatColor.GREEN+"个数："+ChatColor.YELLOW+amount+"\n").event(tipsHoverEvent).underlined(true).event(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/redpacket query amount"))
-                   .append(ChatColor.GREEN+type.getExtraDataName()+"："+ChatColor.YELLOW+extraData+"\n").underlined(true).event(tipsHoverEvent).event(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/redpacket query extradata"))
-                   .append(ChatColor.DARK_GREEN+"创建 ").event(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/redpacket session create"))
-                   .append(ChatColor.RED+"取消 ").event(new ClickEvent(ClickEvent.Action.RUN_COMMAND,"/redpacket session cancel")).create();
+            return new ComponentBuilder(ChatColor.GOLD + "要创建的红包信息：\n")
+                    .append(ChatColor.GREEN + "红包类型：" + ChatColor.YELLOW + type.getName() + "\n").event(tipsHoverEvent).event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/redpacket query type"))
+                    .append(ChatColor.GREEN + "给予类型：" + ChatColor.YELLOW + givetype.getName() + "\n").event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/redpacket query givetype"))
+                    .append(ChatColor.GREEN + "领取人：" + ChatColor.YELLOW + (givers.isEmpty() ? "所有人" : givers.stream().map(Bukkit::getOfflinePlayer).map(OfflinePlayer::getName).collect(Collectors.joining(","))) + "\n").event(tipsHoverEvent).event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/redpacket query giver"))
+                    .append(ChatColor.GREEN + "金额：" + ChatColor.YELLOW + money + "\n").event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/redpacket query money"))
+                    .append(ChatColor.GREEN + "个数：" + ChatColor.YELLOW + amount + "\n").event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/redpacket query amount"))
+                    .append(ChatColor.GREEN + type.getExtraDataName() + "：" + ChatColor.YELLOW + extraData).event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/redpacket query extradata"))
+                    .append("   ").reset()
+                    .append(type == RedPacketType.JieLongRedPacket ? ChatColor.GOLD + "[随机成语]" + "\n" : "\n").event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/redpacket set type jielong")).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("点击以随机成语").create()))
+                    .append(ChatColor.DARK_GREEN + "创建").event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("创建红包").create())).event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/redpacket session create"))
+                    .append("     ").reset()
+                    .append(ChatColor.RED + "取消").event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("取消创建红包").create())).event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/redpacket session cancel")).create();
         }
     }
 }

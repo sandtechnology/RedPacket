@@ -1,20 +1,35 @@
 name: RedPacket
 version: ${project.version}
-main: sandtechnology.jielong.RedPacketPlugin
-prefix: JieLong
+main: sandtechnology.redpacket.RedPacketPlugin
+prefix: RedPacket
 authors: [sandtechnology]
 description: RedPacket
-softdepend:
-  - Vault
+softdepend: [Vault]
 commands:
   RedPacket:
-    permission: RedPacket
-    description: wwww
-    usage: www
+    permission: redpacket
+    description: RedPacket
+    usage: /RedPacket [new|get|help]
     aliases:
       - fhb
       - RP
       - rp
 permissions:
-  RedPacket:
-    default: true
+  redpacket.admin:
+    default: op
+    children:
+      - redpacket.user
+      - redpacket.command.reload
+  redpacket.user:
+    default: notop
+    children:
+      - redpacket
+      - redpacket.command.new
+      - redpacket.command.get
+      - redpacket.command.session
+      - redpacket.get.commonredpacket
+      - redpacket.get.jielongredpacket
+      - redpacket.get.passwordredpacket
+      - redpacket.set.commonredpacket
+      - redpacket.set.jielongredpacket
+      - redpacket.set.passwordredpacket

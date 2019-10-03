@@ -1,14 +1,17 @@
-package sandtechnology.jielong.util;
+package sandtechnology.redpacket.util;
 
 import org.bukkit.Bukkit;
-import sandtechnology.jielong.redpacket.RedPacket;
+import sandtechnology.redpacket.redpacket.RedPacket;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static sandtechnology.jielong.RedPacketPlugin.getDatabaseManager;
-import static sandtechnology.jielong.RedPacketPlugin.getInstance;
+import static sandtechnology.redpacket.RedPacketPlugin.getDatabaseManager;
+import static sandtechnology.redpacket.RedPacketPlugin.getInstance;
 
+/**
+ * 红包管理
+ */
 public class RedPacketManager {
 
     private static final RedPacketManager redPacketManager = new RedPacketManager();

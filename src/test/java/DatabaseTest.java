@@ -1,10 +1,11 @@
 import org.bukkit.entity.Player;
-import sandtechnology.jielong.database.AbstractDatabaseManager;
-import sandtechnology.jielong.redpacket.RedPacket;
+import sandtechnology.redpacket.database.AbstractDatabaseManager;
+import sandtechnology.redpacket.redpacket.RedPacket;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
 
-import static sandtechnology.jielong.RedPacketPlugin.getDatabaseManager;
+import static sandtechnology.redpacket.RedPacketPlugin.getDatabaseManager;
 
 class DatabaseTest {
     public static void main(String[] args) {
@@ -20,7 +21,7 @@ class DatabaseTest {
         Player player = new FakePlayer("Test");
         while (i != 10) {
             long time1 = System.currentTimeMillis();
-            abstractDatabaseManager.store(new RedPacket.Builder().player(player).amount(100).money(10).givers(new HashSet<>(Collections.singletonList(new FakePlayer("233").getUniqueId()))).build());
+            abstractDatabaseManager.store(new RedPacket.Builder(player).amount(100).money(10).givers(new HashSet<>(Collections.singletonList(new FakePlayer("233").getUniqueId()))).build());
             System.out.println("Store Time: " + (System.currentTimeMillis() - time1) + " ms");
             i++;
         }
