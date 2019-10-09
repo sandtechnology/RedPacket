@@ -9,10 +9,7 @@ import sandtechnology.redpacket.database.MysqlManager;
 import sandtechnology.redpacket.database.SqliteManager;
 import sandtechnology.redpacket.listener.ChatListener;
 import sandtechnology.redpacket.listener.MessageSender;
-import sandtechnology.redpacket.util.EcoAndPermissionHelper;
-import sandtechnology.redpacket.util.IdiomManager;
-import sandtechnology.redpacket.util.MessageHelper;
-import sandtechnology.redpacket.util.RedPacketManager;
+import sandtechnology.redpacket.util.*;
 
 import java.util.logging.Level;
 
@@ -89,6 +86,7 @@ public class RedPacketPlugin extends JavaPlugin {
             saveDefaultConfig();
             getConfig();
             getLogger().info("初始化插件...");
+            CompatibilityHelper.setup();
             EcoAndPermissionHelper.setup();
             IdiomManager.setup();
             getLogger().info("更新配置文件...");

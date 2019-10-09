@@ -8,8 +8,8 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import sandtechnology.redpacket.util.CompatibilityHelper;
 import sandtechnology.redpacket.util.IdiomManager;
 import sandtechnology.redpacket.util.OperatorHelper;
 
@@ -213,7 +213,7 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
      * 红包过期自动退款
      */
     public void refundIfExpired() {
-        if (System.currentTimeMillis() > expireTime && !expired && amount != 0) {
+        if (System.currentTimeMillis() > expireTime && !expired && amount != 0 && getInstance().getConfig().getBoolean("RedPacket.Expired")) {
             sendServiceMsg(player, ChatColor.GREEN, "您的红包已过期，已退还" + getCurrentMoney() + "元");
             getEco().depositPlayer(player, getCurrentMoney());
             expired = true;
@@ -270,7 +270,7 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
         double giveMoney = multiply(value, 0.01);
         getEco().depositPlayer(player, giveMoney);
         moneyMap.put(player.getUniqueId(), giveMoney);
-        Bukkit.getScheduler().runTask(getInstance(),()->player.playSound(player.getLocation(), Sound.ENTITY_CAT_AMBIENT,100,1));
+        Bukkit.getScheduler().runTask(getInstance(), () -> CompatibilityHelper.playMeowSound(player));
         broadcastMsg(ChatColor.YELLOW,
                 "玩家" + ChatColor.GOLD + player.getName() +
                         ChatColor.YELLOW + "抢了" + ChatColor.GOLD + this.player.getName() + ChatColor.YELLOW + "的红包" + "，抢到了" + ChatColor.GOLD + giveMoney + ChatColor.YELLOW + "元" + (type == RedPacketType.JieLongRedPacket ? "，下一个成语的音节是" + ChatColor.UNDERLINE + ChatColor.GREEN + getIdiomPinyin(extraData) : ""));

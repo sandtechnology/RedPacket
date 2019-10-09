@@ -30,6 +30,8 @@ RedPacket:
   MaxAmount: 10000
   #最大总额
   MaxMoney: 10000
+  #最小总额
+  MinMoney: 1
   #是否会自动过期
   Expired: false
   #过期时间（单位为ms）

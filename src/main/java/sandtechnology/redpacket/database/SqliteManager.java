@@ -1,7 +1,6 @@
 package sandtechnology.redpacket.database;
 
 import java.sql.DriverManager;
-import java.sql.SQLException;
 
 import static sandtechnology.redpacket.RedPacketPlugin.config;
 import static sandtechnology.redpacket.RedPacketPlugin.getInstance;
@@ -16,6 +15,7 @@ public class SqliteManager extends AbstractDatabaseManager {
     @Override
     void setup(String tableName) {
         try{
+            Class.forName("org.sqlite.JDBC");
             this.tableName = tableName;
             connection = DriverManager.getConnection("jdbc:sqlite:" + getInstance().getDataFolder().toPath().resolve(config().getString("Database.FileName")).toString());
             executeUpdate(
@@ -37,7 +37,7 @@ public class SqliteManager extends AbstractDatabaseManager {
             connection.setAutoCommit(false);
             setRunning(true);
             startCommitTimer();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException("数据库初始化出现错误，将关闭本插件！", ex);
         }
     }

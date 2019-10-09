@@ -1,7 +1,6 @@
 package sandtechnology.redpacket.database;
 
 import java.sql.DriverManager;
-import java.sql.SQLException;
 
 import static sandtechnology.redpacket.RedPacketPlugin.config;
 
@@ -14,6 +13,7 @@ public class MysqlManager extends AbstractDatabaseManager {
     @Override
     void setup(String tableName) {
         try {
+            Class.forName("com.mysql.jdbc.Driver");
             this.tableName = tableName;
             String argument=config().getString("Database.MySQLArgument");
             connection = DriverManager.getConnection(
@@ -47,7 +47,7 @@ public class MysqlManager extends AbstractDatabaseManager {
             connection.setAutoCommit(false);
             setRunning(true);
             startCommitTimer();
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException("数据库初始化出现错误，将关闭本插件！", ex);
 
         }

@@ -2,12 +2,12 @@ package sandtechnology.redpacket.util;
 
 import com.google.gson.reflect.TypeToken;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -25,7 +25,7 @@ public class MessageHelper {
     private static final Map<UUID, List<String>> massageMap = new HashMap<>();
     private static final Map<UUID, List<BaseComponent[]>> componentMassageMap = new HashMap<>();
     private static final Type massageMapType = new TypeToken<Map<UUID, List<String>>>() {}.getType();
-    private static boolean loaded = false;
+    private static final BaseComponent[] baseComponentType = new BaseComponent[]{};
 
     private MessageHelper() {
     }
@@ -74,8 +74,8 @@ public class MessageHelper {
      */
     public static void broadcastSelectiveRedPacket(List<OfflinePlayer> players, String title, String subtitle) {
         players.stream().filter(OfflinePlayer::isOnline).map(OfflinePlayer::getPlayer).forEach(player -> {
-            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 100, 1);
-            player.sendTitle(title, subtitle, -1, -1, -1);
+            CompatibilityHelper.playLevelUpSound(player);
+            CompatibilityHelper.sendTitle(player, title, subtitle);
         });
     }
 
@@ -86,8 +86,8 @@ public class MessageHelper {
      */
     public static void broadcastRedPacket(String title, String subtitle){
         getServer().getOnlinePlayers().forEach(player->{
-            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP,100,1);
-            player.sendTitle(title,subtitle,-1,-1,-1);
+            CompatibilityHelper.playLevelUpSound(player);
+            CompatibilityHelper.sendTitle(player, title, subtitle);
         });
     }
 
@@ -105,7 +105,10 @@ public class MessageHelper {
      * @param msg 内容
      */
     public static void broadcastMsg(BaseComponent...msg) {
-        getServer().spigot().broadcast(new ComponentBuilder(ChatColor.GREEN + "[红包]").append(msg).create());
+        List<BaseComponent> components = new ArrayList<>(Arrays.asList(msg));
+        components.add(0, new TextComponent(ChatColor.GREEN + "[红包]"));
+        getServer().getOnlinePlayers().forEach(player -> CompatibilityHelper.sendJSONMessage(player, components.toArray(baseComponentType)));
+
     }
 
     /**
@@ -123,8 +126,8 @@ public class MessageHelper {
      * @param sender 接收者
      * @param msg 内容
      */
-    public static void sendSimpleMsg(CommandSender sender, BaseComponent...msg){
-        sender.spigot().sendMessage(new ComponentBuilder(ChatColor.GREEN + "[红包]").append(msg).create());
+    public static void sendSimpleMsg(Player sender, BaseComponent... msg) {
+        CompatibilityHelper.sendJSONMessage(sender, msg);
     }
 
     /**
