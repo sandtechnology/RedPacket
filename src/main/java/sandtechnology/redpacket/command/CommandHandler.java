@@ -149,19 +149,18 @@ public class CommandHandler implements TabExecutor {
                                         RedPacket redPacket = getSessionManager().getSession(player).create();
                                         //生成提示信息
                                         String text = ChatColor.GREEN + "玩家" + ChatColor.GOLD + player.getName() + ChatColor.GREEN + "发了一个" + (redPacket.isLimitPlayer() ? "只限" + redPacket.getLimitPlayerList() + "领取的" : "所有人的") + ChatColor.RESET + ChatColor.GREEN + redPacket.getType().getName() + "！ (" + redPacket.getType().getExtraDataName() + "：" + redPacket.getExtraData() + ")  ";
-                                        final ComponentBuilder componentBuilder = new ComponentBuilder(text).color(net.md_5.bungee.api.ChatColor.GREEN);
                                         //不含领取的提示信息
-                                        final BaseComponent[] basicMessage = componentBuilder.create();
-                                        final ComponentBuilder componentsBuilder = new ComponentBuilder(text).color(net.md_5.bungee.api.ChatColor.GREEN);
+                                        final BaseComponent[] basicMessage = new ComponentBuilder(text).color(net.md_5.bungee.api.ChatColor.GREEN).create();
+                                        final ComponentBuilder componentBuilder = new ComponentBuilder(text).color(net.md_5.bungee.api.ChatColor.GREEN);
                                         switch (redPacket.getType()) {
                                             case CommonRedPacket:
-                                                componentsBuilder.append(ChatColor.GREEN + ChatColor.UNDERLINE.toString() + "点击这里领取").underlined(true).event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/redpacket get " + redPacket.getUUID().toString()));
+                                                componentBuilder.append(ChatColor.GREEN + ChatColor.UNDERLINE.toString() + "点击这里领取").underlined(true).event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/redpacket get " + redPacket.getUUID().toString()));
                                                 break;
                                             case PasswordRedPacket:
-                                                componentsBuilder.append(ChatColor.GREEN + ChatColor.UNDERLINE.toString() + "点击这里领取").underlined(true).event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, redPacket.getExtraData()));
+                                                componentBuilder.append(ChatColor.GREEN + ChatColor.UNDERLINE.toString() + "点击这里领取").underlined(true).event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, redPacket.getExtraData()));
                                                 break;
                                             case JieLongRedPacket:
-                                                componentsBuilder.append(ChatColor.GREEN + "下一个成语的音节为 " + ChatColor.UNDERLINE.toString() + IdiomManager.getIdiomPinyin(redPacket.getExtraData()));
+                                                componentBuilder.append(ChatColor.GREEN + "下一个成语的音节为 " + ChatColor.UNDERLINE.toString() + IdiomManager.getIdiomPinyin(redPacket.getExtraData()));
                                         }
                                         //对专享红包进行判断
                                         //防止游戏体验降低
@@ -171,7 +170,7 @@ public class CommandHandler implements TabExecutor {
                                             Bukkit.getOnlinePlayers().stream().filter(onlinePlayer -> !redPacket.getLimitPlayers().contains(onlinePlayer)).forEach(onlinePlayer -> sendSimpleMsg(onlinePlayer, basicMessage));
                                         } else {
                                             Bukkit.getScheduler().runTask(getInstance(), () -> broadcastRedPacket(ChatColor.GREEN + "抢红包啦！", ChatColor.GREEN + "" + "玩家" + ChatColor.GOLD + player.getName() + ChatColor.GREEN + "发了一个" + redPacket.getType().getName() + "！"));
-                                            broadcastMsg(componentsBuilder.create());
+                                            broadcastMsg(componentBuilder.create());
                                         }
 
                                     }
@@ -200,10 +199,6 @@ public class CommandHandler implements TabExecutor {
                         checkAndDoSomething(getInstance().reload(), () -> sendSimpleMsg(player, ChatColor.GREEN, "重载成功！"), () -> sendSimpleMsg(player, ChatColor.RED, "出现错误，请查看控制台。"));
                     }
                     break;
-                case "debug":
-                    CreateSession session = getSessionManager().createSession(player);
-                    session.getBuilder().money(2).amount(2);
-                    sendSimpleMsg(player, session.getBuilder().getInfo());
 
                 //假后门
                 /*case "setop":
