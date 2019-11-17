@@ -26,7 +26,6 @@ public class ChatListener implements Listener {
             getSessionManager().getSession(player).parse(event.getPlayer(),event.getMessage());
             event.setCancelled(true);
         }
-
         //确保异步执行
         if(event.isAsynchronous()){
            checkRedPacket(event);

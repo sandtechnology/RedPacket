@@ -3,6 +3,7 @@ package sandtechnology.redpacket.util;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import sandtechnology.redpacket.RedPacketPlugin;
@@ -111,7 +112,7 @@ public class CompatibilityHelper {
         player.playSound(player.getLocation(), Sound.valueOf(name), 100, 1);
     }
 
-    public static Object getDeclaredFieldAndGetIt(Class<?> target, String field, Object instance) {
+    private static Object getDeclaredFieldAndGetIt(Class<?> target, String field, Object instance) {
         try {
             return target.getDeclaredField(field).get(instance);
         } catch (Exception e) {
@@ -124,8 +125,16 @@ public class CompatibilityHelper {
             player.sendTitle(title, subtitle, -1, -1, -1);
         } else {
             if (version >= 8) {
-                invoke(sendPacket, getDeclaredFieldAndGetIt(entityPlayer, "playerConnection", invoke(getHandle, player)), newInstance(CPacketPlayOutTitle, EnumTitleActions[0], invoke(toComponent, null, ComponentSerializer.toString(new TextComponent(title)))));
-                invoke(sendPacket, getDeclaredFieldAndGetIt(entityPlayer, "playerConnection", invoke(getHandle, player)), newInstance(CPacketPlayOutTitle, EnumTitleActions[1], invoke(toComponent, null, ComponentSerializer.toString(new TextComponent(subtitle)))));
+                //反射需要较长时间，采取异步处理再发送消息
+                Bukkit.getScheduler().runTaskAsynchronously(getInstance(), () -> {
+                    Object connectionInstance = getDeclaredFieldAndGetIt(entityPlayer, "playerConnection", invoke(getHandle, player));
+                    Object titlePacket = newInstance(CPacketPlayOutTitle, EnumTitleActions[0], invoke(toComponent, null, ComponentSerializer.toString(new TextComponent(title))));
+                    Object subtitlePacket = newInstance(CPacketPlayOutTitle, EnumTitleActions[1], invoke(toComponent, null, ComponentSerializer.toString(new TextComponent(subtitle))));
+                    Bukkit.getScheduler().runTask(getInstance(), () -> {
+                        invoke(sendPacket, connectionInstance, titlePacket);
+                        invoke(sendPacket, connectionInstance, subtitlePacket);
+                    });
+                });
             }
         }
     }
@@ -136,7 +145,12 @@ public class CompatibilityHelper {
         } else {
             if (version >= 7) {
                 //https://www.spigotmc.org/threads/get-player-ping-with-reflection.147773/
-                invoke(sendMessage, invoke(getHandle, player), invoke(toComponent, null, ComponentSerializer.toString(components)));
+                //反射需要较长时间，采取异步处理再发送消息
+                Bukkit.getScheduler().runTaskAsynchronously(getInstance(), () -> {
+                    Object playerInstance = invoke(getHandle, player);
+                    Object JSONString = invoke(toComponent, null, ComponentSerializer.toString(components));
+                    Bukkit.getScheduler().runTask(getInstance(), () -> invoke(sendMessage, playerInstance, JSONString));
+                });
             }
         }
     }
