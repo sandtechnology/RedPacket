@@ -6,12 +6,10 @@ import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import sandtechnology.redpacket.RedPacketPlugin;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static org.bukkit.Bukkit.getServer;
@@ -48,16 +46,13 @@ public class CompatibilityHelper {
     private CompatibilityHelper() {
     }
 
+
     private static Class<?> getNMSClass(String name) throws ClassNotFoundException {
         return Class.forName("net.minecraft.server." + nmsName + "." + name);
     }
 
     public static void setup() {
         try {
-            if (version < 8) {
-                RedPacketPlugin.log(Level.SEVERE, "插件只支持1.8+版本！");
-                getServer().getPluginManager().disablePlugin(getInstance());
-            }
             entityPlayer = getNMSClass("EntityPlayer");
             chatSerializer = getNMSClass("IChatBaseComponent$ChatSerializer");
             IChatBaseComponent = getNMSClass("IChatBaseComponent");

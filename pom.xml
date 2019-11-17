@@ -6,12 +6,12 @@
 
     <groupId>JieLong-Bukkit</groupId>
     <artifactId>JieLong-Bukkit</artifactId>
-    <version>1.4</version>
+    <version>1.5</version>
     <packaging>jar</packaging>
 
-    <name>JieLong</name>
+    <name>RedPacket</name>
 
-    <description>JieLong</description>
+    <description>RedPacket</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
