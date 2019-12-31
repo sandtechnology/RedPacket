@@ -189,8 +189,8 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
             switch (type) {
                 case JieLongRedPacket:
                     if (isValidSequence(extraData, extra)) {
-                        giveMoney(player);
                         this.extraData = extra;
+                        giveMoney(player);
                     }
                     break;
                 case PasswordRedPacket:

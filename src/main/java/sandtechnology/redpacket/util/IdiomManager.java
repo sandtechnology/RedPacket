@@ -27,6 +27,17 @@ public class IdiomManager {
     private IdiomManager() {
     }
 
+    public static void debugSetup(Object ref) {
+        InputStream fis = ref.getClass().getClassLoader().getResourceAsStream("idiom.json");
+        if (fis == null) {
+            throw new RuntimeException("idiom.json丢失！将无法进行成语接龙！");
+        }
+        Gson gson = new Gson();
+        POJOIdiom[] idioms = gson.fromJson(new InputStreamReader(fis, StandardCharsets.UTF_8), POJOIdiom[].class);
+        Arrays.stream(idioms).forEach(i -> idiomMap.put(i.word, i));
+        idiomList.addAll(idiomMap.keySet());
+    }
+
     public static void setup() {
         long startTime = System.currentTimeMillis();
         log(Level.INFO, "从Jar中加载成语数据库(idiom.json)...");

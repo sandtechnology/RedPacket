@@ -20,7 +20,11 @@ public class RedPacketPlugin extends JavaPlugin {
     private boolean startup;
 
     public static RedPacketPlugin getInstance() {
-        return instance;
+        if (instance != null) {
+            return instance;
+        } else {
+            throw new IllegalStateException("插件未正常开启！请查看报错信息");
+        }
     }
 
     public RedPacketPlugin() {
