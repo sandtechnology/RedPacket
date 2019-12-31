@@ -212,7 +212,7 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
     /**
      * 红包过期自动退款
      */
-    public void refundIfExpired() {
+    synchronized public void refundIfExpired() {
         if (System.currentTimeMillis() > expireTime && !expired && amount != 0 && getInstance().getConfig().getBoolean("RedPacket.Expired")) {
             sendServiceMsg(player, ChatColor.GREEN, "您的红包已过期，已退还" + getCurrentMoney() + "元");
             getEco().depositPlayer(player, getCurrentMoney());
@@ -249,7 +249,7 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
      *
      * @param player 要给予红包的玩家
      */
-    public void giveMoney(Player player) {
+    synchronized public void giveMoney(Player player) {
         if (System.currentTimeMillis() >= expireTime) {
             return;
         }

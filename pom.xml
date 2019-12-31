@@ -6,7 +6,7 @@
 
     <groupId>JieLong-Bukkit</groupId>
     <artifactId>JieLong-Bukkit</artifactId>
-    <version>1.5</version>
+    <version>1.5.1</version>
     <packaging>jar</packaging>
 
     <name>RedPacket</name>
