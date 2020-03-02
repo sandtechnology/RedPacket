@@ -73,7 +73,14 @@ public class CreateSession {
                     break;
             }
         } catch (NumberFormatException e) {
-            sendSimpleMsg(player, ChatColor.RED, "格式错误！");
+            //去除颜色代码
+            if (data.contains("§")) {
+                data = data.replaceAll("§([0-9]|[A-z])", "").replaceAll("§", "");
+                //重试
+                parse(player, data);
+            } else {
+                sendSimpleMsg(player, ChatColor.RED, "数字格式错误！你输入的是" + data);
+            }
         }
         setState(State.Init);
         sendSimpleMsg(player, builder.getInfo());

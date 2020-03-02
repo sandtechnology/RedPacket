@@ -87,11 +87,6 @@ public class RedPacketPlugin extends JavaPlugin {
             reload();
         }
         try {
-            int version = Integer.parseInt(getServer().getBukkitVersion().split("\\.")[1]);
-            if (version <= 7) {
-                RedPacketPlugin.log(Level.SEVERE, "插件只支持1.8+版本！");
-                throw new IllegalStateException("插件只支持1.8+版本！");
-            }
             saveDefaultConfig();
             getConfig();
             getLogger().info("初始化插件...");

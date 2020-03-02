@@ -6,28 +6,25 @@ import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import sandtechnology.redpacket.RedPacketPlugin;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static org.bukkit.Bukkit.getServer;
 import static sandtechnology.redpacket.RedPacketPlugin.getInstance;
 
 public class CompatibilityHelper {
-    /*
-    多版本兼容
-    1.14.3->14
-    1.13.2->13
-    1.12.2->12
-    1.8.8->8
-    1.7.10->7
-    */
-    private static final int version = Integer.parseInt(getServer().getBukkitVersion().split("\\.")[1]);
-
     //NMS名： "org.bukkit.craftbukkit.v1_x_Rx"->{"org","bukkit","craftbukkit","v1_x_Rx"}->"v1_x_Rx"
     private static final String nmsName = getServer().getClass().getPackage().getName().split("\\.")[3];
+    /*
+    基于NMS名的版本提取
+    v1_8_R1->8
+    */
+    private static final int version = Integer.parseInt(nmsName.split("_")[1]);
 
     private static Class<?> IChatBaseComponent;
     private static Class<?> chatSerializer;
@@ -52,6 +49,10 @@ public class CompatibilityHelper {
     }
 
     public static void setup() {
+        if (version <= 7) {
+            RedPacketPlugin.log(Level.SEVERE, "插件只支持1.8+版本！");
+            throw new IllegalStateException("插件只支持1.8+版本！");
+        }
         try {
             entityPlayer = getNMSClass("EntityPlayer");
             chatSerializer = getNMSClass("IChatBaseComponent$ChatSerializer");
