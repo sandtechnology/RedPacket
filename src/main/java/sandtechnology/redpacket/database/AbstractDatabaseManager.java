@@ -31,7 +31,7 @@ public abstract class AbstractDatabaseManager {
                 //System.out.println("Waiting commit");
                 sleep();
             }
-            connection.createStatement().executeUpdate(sql);
+            getConnection().createStatement().executeUpdate(sql);
         } catch (SQLException ex) {
             throw new RuntimeException("SQL语句执行错误！语句：" + sql, ex);
         }
@@ -41,7 +41,7 @@ public abstract class AbstractDatabaseManager {
 
     private ResultSet executeQuery(String sql) {
         try {
-            return connection.createStatement().executeQuery(sql);
+            return getConnection().createStatement().executeQuery(sql);
         } catch (SQLException ex) {
             throw new RuntimeException("SQL语句执行错误！语句：" + sql, ex);
         }
@@ -77,16 +77,20 @@ public abstract class AbstractDatabaseManager {
 
     private synchronized void close() {
         try {
-            connection.close();
+            getConnection().close();
         } catch (SQLException ex) {
             throw new RuntimeException("数据库连接关闭失败！", ex);
         }
     }
 
+    public Connection getConnection() {
+        return connection;
+    }
+
     private synchronized void commit() {
         try {
             commiting = true;
-            connection.commit();
+            getConnection().commit();
             commiting = false;
         } catch (SQLException ex) {
             throw new RuntimeException("数据库提交更改失败！", ex);

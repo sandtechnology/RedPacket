@@ -21,7 +21,7 @@ permissions:
       - redpacket.user
       - redpacket.command.reload
   redpacket.user:
-    default: notop
+    default: true
     children:
       - redpacket
       - redpacket.command.new

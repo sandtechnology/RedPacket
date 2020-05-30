@@ -413,7 +413,7 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
             checkMap.put((builder) -> builder.money > 0, "红包总额必须大于0！");
             checkMap.put((builder) -> getEco().getBalance(builder.player) >= builder.money, "你的余额不足！");
             checkMap.put((builder) -> OperatorHelper.divide(builder.money, builder.amount) >= 0.01, "红包平均最低金额不能低于0.01！");
-            checkMap.put((builder) -> builder.type != RedPacketType.PasswordRedPacket || !builder.extraData.contains("§"), "接龙红包不能包含样式代码！");
+            checkMap.put((builder) -> builder.type != RedPacketType.PasswordRedPacket || !builder.extraData.contains("§") && !builder.extraData.startsWith("/"), "口令红包不能包含样式代码和命令！");
             checkMap.put((builder) -> builder.type != RedPacketType.JieLongRedPacket || IdiomManager.isValidIdiom(builder.extraData), "该成语无效！");
             checkMap.put((builder) -> getInstance().getConfig().getDouble("RedPacket.MaxMoney") >= builder.money, "红包总额不能超出{MaxMoney}！");
             checkMap.put((builder) -> getInstance().getConfig().getInt("RedPacket.MaxAmount") >= builder.amount, "红包数量不能超出{MaxAmount}！");
