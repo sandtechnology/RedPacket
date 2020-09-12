@@ -60,7 +60,7 @@ public class EcoAndPermissionHelper {
             log(Level.SEVERE, "未找到Vault！此插件将被禁用！");
         }
 
-        if (getServer().getPluginManager().getPlugin("Vault") == null && eco == null) {
+        if (getServer().getPluginManager().getPlugin("Vault") == null || eco == null) {
             throw new RuntimeException("当前插件运行环境不符合！将禁用本插件！");
         }
     }

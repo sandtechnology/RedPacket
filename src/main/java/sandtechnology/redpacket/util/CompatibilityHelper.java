@@ -54,6 +54,10 @@ public class CompatibilityHelper {
             throw new IllegalStateException("插件只支持1.8+版本！");
         }
         try {
+            if (version > 12) {
+                //1.12以上不需要NMS反射
+                return;
+            }
             entityPlayer = getNMSClass("EntityPlayer");
             chatSerializer = getNMSClass("IChatBaseComponent$ChatSerializer");
             IChatBaseComponent = getNMSClass("IChatBaseComponent");
