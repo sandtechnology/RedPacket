@@ -2,9 +2,9 @@ name: RedPacket
 version: ${project.version}
 main: sandtechnology.redpacket.RedPacketPlugin
 prefix: RedPacket
-authors: [sandtechnology]
+authors: [ sandtechnology ]
 description: RedPacket
-softdepend: [Vault]
+softdepend: [ Vault ]
 commands:
   RedPacket:
     permission: redpacket
@@ -20,6 +20,30 @@ permissions:
     children:
       - redpacket.user
       - redpacket.command.reload
+  redpacket:
+    default: true
+  redpacket.command.new:
+    default: true
+  redpacket.command.get:
+    default: true
+  redpacket.command.session:
+    default: true
+  redpacket.command.reload:
+    default: op
+
+  redpacket.set.commonredpacket:
+    default: true
+  redpacket.set.jielongredpacket:
+    default: true
+  redpacket.set.passwordredpacket:
+    default: true
+  redpacket.get.commonredpacket:
+    default: true
+  redpacket.get.jielongredpacket:
+    default: true
+  redpacket.get.passwordredpacket:
+    default: true
+
   redpacket.user:
     default: true
     children:
@@ -33,3 +57,4 @@ permissions:
       - redpacket.set.commonredpacket
       - redpacket.set.jielongredpacket
       - redpacket.set.passwordredpacket
+
