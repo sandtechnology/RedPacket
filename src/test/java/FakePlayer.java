@@ -1,29 +1,75 @@
-import org.bukkit.*;
+import org.bukkit.DyeColor;
+import org.bukkit.Effect;
+import org.bukkit.EntityEffect;
+import org.bukkit.FluidCollisionMode;
+import org.bukkit.GameMode;
+import org.bukkit.Instrument;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Note;
+import org.bukkit.Particle;
+import org.bukkit.Server;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
+import org.bukkit.Statistic;
+import org.bukkit.WeatherType;
+import org.bukkit.World;
+import org.bukkit.WorldBorder;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.PistonMoveReaction;
+import org.bukkit.block.Sign;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityCategory;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Pose;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.SpawnCategory;
+import org.bukkit.entity.Villager;
+import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MainHand;
+import org.bukkit.inventory.Merchant;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.map.MapView;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.profile.PlayerProfile;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.util.BoundingBox;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 class FakePlayer implements Player {
 
@@ -57,6 +103,31 @@ class FakePlayer implements Player {
 
     @Override
     public void setPlayerListName(String name) {
+
+    }
+
+    @Override
+    public String getPlayerListHeader() {
+        return null;
+    }
+
+    @Override
+    public void setPlayerListHeader(String header) {
+
+    }
+
+    @Override
+    public String getPlayerListFooter() {
+        return null;
+    }
+
+    @Override
+    public void setPlayerListFooter(String footer) {
+
+    }
+
+    @Override
+    public void setPlayerListHeaderFooter(String header, String footer) {
 
     }
 
@@ -103,6 +174,11 @@ class FakePlayer implements Player {
 
     @Override
     public void sendRawMessage(String message) {
+
+    }
+
+    @Override
+    public void sendRawMessage(UUID sender, String message) {
 
     }
 
@@ -192,6 +268,16 @@ class FakePlayer implements Player {
     }
 
     @Override
+    public void playSound(Entity entity, Sound sound, float volume, float pitch) {
+
+    }
+
+    @Override
+    public void playSound(Entity entity, Sound sound, SoundCategory category, float volume, float pitch) {
+
+    }
+
+    @Override
     public void stopSound(Sound sound) {
 
     }
@@ -212,6 +298,16 @@ class FakePlayer implements Player {
     }
 
     @Override
+    public void stopSound(SoundCategory category) {
+
+    }
+
+    @Override
+    public void stopAllSounds() {
+
+    }
+
+    @Override
     public void playEffect(Location loc, Effect effect, int data) {
 
     }
@@ -222,24 +318,48 @@ class FakePlayer implements Player {
     }
 
     @Override
-    public void sendBlockChange(Location loc, Material material, byte data) {
-
-    }
-
-
-
-    @Override
-    public boolean sendChunkChange(Location loc, int sx, int sy, int sz, byte[] data) {
+    public boolean breakBlock(Block block) {
         return false;
     }
 
     @Override
-    public void sendBlockChange(Location loc, int material, byte data) {
+    public void sendBlockChange(Location loc, Material material, byte data) {
 
     }
 
     @Override
+    public void sendBlockChange(Location loc, BlockData block) {
+
+    }
+
+    @Override
+    public void sendBlockChanges(Collection<BlockState> blocks, boolean suppressLightUpdates) {
+
+    }
+
+    @Override
+    public void sendBlockDamage(Location loc, float progress) {
+
+    }
+
+    @Override
+    public void sendEquipmentChange(LivingEntity entity, EquipmentSlot slot, ItemStack item) {
+
+    }
+
+
+    @Override
     public void sendSignChange(Location loc, String[] lines) throws IllegalArgumentException {
+
+    }
+
+    @Override
+    public void sendSignChange(Location loc, String[] lines, DyeColor dyeColor) throws IllegalArgumentException {
+
+    }
+
+    @Override
+    public void sendSignChange(Location loc, String[] lines, DyeColor dyeColor, boolean hasGlowingText) throws IllegalArgumentException {
 
     }
 
@@ -254,19 +374,10 @@ class FakePlayer implements Player {
     }
 
     @Override
-    public void awardAchievement(Achievement achievement) {
-
+    public GameMode getPreviousGameMode() {
+        return null;
     }
 
-    @Override
-    public void removeAchievement(Achievement achievement) {
-
-    }
-
-    @Override
-    public boolean hasAchievement(Achievement achievement) {
-        return false;
-    }
 
     @Override
     public void incrementStatistic(Statistic statistic) throws IllegalArgumentException {
@@ -439,6 +550,16 @@ class FakePlayer implements Player {
     }
 
     @Override
+    public void sendExperienceChange(float progress) {
+
+    }
+
+    @Override
+    public void sendExperienceChange(float progress, int level) {
+
+    }
+
+    @Override
     public float getExhaustion() {
         return 0;
     }
@@ -466,6 +587,51 @@ class FakePlayer implements Player {
     @Override
     public void setFoodLevel(int value) {
 
+    }
+
+    @Override
+    public int getSaturatedRegenRate() {
+        return 0;
+    }
+
+    @Override
+    public void setSaturatedRegenRate(int ticks) {
+
+    }
+
+    @Override
+    public int getUnsaturatedRegenRate() {
+        return 0;
+    }
+
+    @Override
+    public void setUnsaturatedRegenRate(int ticks) {
+
+    }
+
+    @Override
+    public int getStarvationRate() {
+        return 0;
+    }
+
+    @Override
+    public void setStarvationRate(int ticks) {
+
+    }
+
+    @Override
+    public Location getLastDeathLocation() {
+        return null;
+    }
+
+    @Override
+    public void setLastDeathLocation(Location location) {
+
+    }
+
+    @Override
+    public Firework fireworkBoost(ItemStack fireworkItemStack) {
+        return null;
     }
 
     @Override
@@ -559,6 +725,21 @@ class FakePlayer implements Player {
     }
 
     @Override
+    public void hideEntity(Plugin plugin, Entity entity) {
+
+    }
+
+    @Override
+    public void showEntity(Plugin plugin, Entity entity) {
+
+    }
+
+    @Override
+    public boolean canSee(Entity entity) {
+        return false;
+    }
+
+    @Override
     public boolean isFlying() {
         return false;
     }
@@ -604,12 +785,37 @@ class FakePlayer implements Player {
     }
 
     @Override
+    public void setResourcePack(String url, byte[] hash, String prompt) {
+
+    }
+
+    @Override
+    public void setResourcePack(String url, byte[] hash, boolean force) {
+
+    }
+
+    @Override
+    public void setResourcePack(String url, byte[] hash, String prompt, boolean force) {
+
+    }
+
+    @Override
     public Scoreboard getScoreboard() {
         return null;
     }
 
     @Override
     public void setScoreboard(Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {
+
+    }
+
+    @Override
+    public WorldBorder getWorldBorder() {
+        return null;
+    }
+
+    @Override
+    public void setWorldBorder(WorldBorder border) {
 
     }
 
@@ -724,8 +930,43 @@ class FakePlayer implements Player {
     }
 
     @Override
+    public int getClientViewDistance() {
+        return 0;
+    }
+
+    @Override
+    public int getPing() {
+        return 0;
+    }
+
+    @Override
     public String getLocale() {
         return null;
+    }
+
+    @Override
+    public void updateCommands() {
+
+    }
+
+    @Override
+    public void openBook(ItemStack book) {
+
+    }
+
+    @Override
+    public void openSign(Sign sign) {
+
+    }
+
+    @Override
+    public void showDemoScreen() {
+
+    }
+
+    @Override
+    public boolean isAllowingServerListings() {
+        return false;
     }
 
     @Override
@@ -845,8 +1086,28 @@ class FakePlayer implements Player {
     }
 
     @Override
+    public boolean isClimbing() {
+        return false;
+    }
+
+    @Override
     public int getSleepTicks() {
         return 0;
+    }
+
+    @Override
+    public boolean sleep(Location location, boolean force) {
+        return false;
+    }
+
+    @Override
+    public void wakeup(boolean setSpawnLocation) {
+
+    }
+
+    @Override
+    public Location getBedLocation() {
+        return null;
     }
 
     @Override
@@ -870,8 +1131,48 @@ class FakePlayer implements Player {
     }
 
     @Override
+    public ItemStack getItemInUse() {
+        return null;
+    }
+
+    @Override
     public int getExpToLevel() {
         return 0;
+    }
+
+    @Override
+    public float getAttackCooldown() {
+        return 0;
+    }
+
+    @Override
+    public boolean discoverRecipe(NamespacedKey recipe) {
+        return false;
+    }
+
+    @Override
+    public int discoverRecipes(Collection<NamespacedKey> recipes) {
+        return 0;
+    }
+
+    @Override
+    public boolean undiscoverRecipe(NamespacedKey recipe) {
+        return false;
+    }
+
+    @Override
+    public int undiscoverRecipes(Collection<NamespacedKey> recipes) {
+        return 0;
+    }
+
+    @Override
+    public boolean hasDiscoveredRecipe(NamespacedKey recipe) {
+        return false;
+    }
+
+    @Override
+    public Set<NamespacedKey> getDiscoveredRecipes() {
+        return null;
     }
 
     @Override
@@ -892,6 +1193,11 @@ class FakePlayer implements Player {
     @Override
     public void setShoulderEntityRight(Entity entity) {
 
+    }
+
+    @Override
+    public boolean dropItem(boolean dropAll) {
+        return false;
     }
 
     @Override
@@ -925,6 +1231,26 @@ class FakePlayer implements Player {
     }
 
     @Override
+    public Block getTargetBlockExact(int maxDistance) {
+        return null;
+    }
+
+    @Override
+    public Block getTargetBlockExact(int maxDistance, FluidCollisionMode fluidCollisionMode) {
+        return null;
+    }
+
+    @Override
+    public RayTraceResult rayTraceBlocks(double maxDistance) {
+        return null;
+    }
+
+    @Override
+    public RayTraceResult rayTraceBlocks(double maxDistance, FluidCollisionMode fluidCollisionMode) {
+        return null;
+    }
+
+    @Override
     public int getRemainingAir() {
         return 0;
     }
@@ -941,6 +1267,26 @@ class FakePlayer implements Player {
 
     @Override
     public void setMaximumAir(int ticks) {
+
+    }
+
+    @Override
+    public int getArrowCooldown() {
+        return 0;
+    }
+
+    @Override
+    public void setArrowCooldown(int ticks) {
+
+    }
+
+    @Override
+    public int getArrowsInBody() {
+        return 0;
+    }
+
+    @Override
+    public void setArrowsInBody(int count) {
 
     }
 
@@ -1069,6 +1415,21 @@ class FakePlayer implements Player {
 
     }
 
+    @Override
+    public boolean isSwimming() {
+        return false;
+    }
+
+    @Override
+    public void setSwimming(boolean swimming) {
+
+    }
+
+    @Override
+    public boolean isRiptiding() {
+        return false;
+    }
+
 
     @Override
     public void setAI(boolean ai) {
@@ -1081,8 +1442,93 @@ class FakePlayer implements Player {
     }
 
     @Override
+    public void attack(Entity target) {
+
+    }
+
+    @Override
+    public void swingMainHand() {
+
+    }
+
+    @Override
+    public void swingOffHand() {
+
+    }
+
+    @Override
     public boolean isCollidable() {
         return false;
+    }
+
+    @Override
+    public Set<UUID> getCollidableExemptions() {
+        return null;
+    }
+
+    @Override
+    public <T> T getMemory(MemoryKey<T> memoryKey) {
+        return null;
+    }
+
+    @Override
+    public <T> void setMemory(MemoryKey<T> memoryKey, T memoryValue) {
+
+    }
+
+    @Override
+    public Sound getHurtSound() {
+        return null;
+    }
+
+    @Override
+    public Sound getDeathSound() {
+        return null;
+    }
+
+    @Override
+    public Sound getFallDamageSound(int fallHeight) {
+        return null;
+    }
+
+    @Override
+    public Sound getFallDamageSoundSmall() {
+        return null;
+    }
+
+    @Override
+    public Sound getFallDamageSoundBig() {
+        return null;
+    }
+
+    @Override
+    public Sound getDrinkingSound(ItemStack itemStack) {
+        return null;
+    }
+
+    @Override
+    public Sound getEatingSound(ItemStack itemStack) {
+        return null;
+    }
+
+    @Override
+    public boolean canBreatheUnderwater() {
+        return false;
+    }
+
+    @Override
+    public EntityCategory getCategory() {
+        return null;
+    }
+
+    @Override
+    public boolean isInvisible() {
+        return false;
+    }
+
+    @Override
+    public void setInvisible(boolean invisible) {
+
     }
 
     @Override
@@ -1112,6 +1558,16 @@ class FakePlayer implements Player {
 
     @Override
     public void setHealth(double health) {
+
+    }
+
+    @Override
+    public double getAbsorptionAmount() {
+        return 0;
+    }
+
+    @Override
+    public void setAbsorptionAmount(double amount) {
 
     }
 
@@ -1161,13 +1617,28 @@ class FakePlayer implements Player {
     }
 
     @Override
+    public BoundingBox getBoundingBox() {
+        return null;
+    }
+
+    @Override
     public boolean isOnGround() {
+        return false;
+    }
+
+    @Override
+    public boolean isInWater() {
         return false;
     }
 
     @Override
     public World getWorld() {
         return null;
+    }
+
+    @Override
+    public void setRotation(float yaw, float pitch) {
+
     }
 
     @Override
@@ -1211,6 +1682,36 @@ class FakePlayer implements Player {
     }
 
     @Override
+    public boolean isVisualFire() {
+        return false;
+    }
+
+    @Override
+    public void setVisualFire(boolean fire) {
+
+    }
+
+    @Override
+    public int getFreezeTicks() {
+        return 0;
+    }
+
+    @Override
+    public void setFreezeTicks(int ticks) {
+
+    }
+
+    @Override
+    public int getMaxFreezeTicks() {
+        return 0;
+    }
+
+    @Override
+    public boolean isFrozen() {
+        return false;
+    }
+
+    @Override
     public int getMaxFireTicks() {
         return 0;
     }
@@ -1241,10 +1742,29 @@ class FakePlayer implements Player {
     }
 
     @Override
+    public void sendMessage(UUID sender, String message) {
+
+    }
+
+    @Override
+    public void sendMessage(UUID sender, String... messages) {
+
+    }
+
+    @Override
     public Server getServer() {
         return null;
     }
 
+    @Override
+    public boolean isPersistent() {
+        return false;
+    }
+
+    @Override
+    public void setPersistent(boolean persistent) {
+
+    }
 
 
     @Override
@@ -1308,6 +1828,11 @@ class FakePlayer implements Player {
     }
 
     @Override
+    public PlayerProfile getPlayerProfile() {
+        return null;
+    }
+
+    @Override
     public int getTicksLived() {
         return 0;
     }
@@ -1324,6 +1849,21 @@ class FakePlayer implements Player {
 
     @Override
     public EntityType getType() {
+        return null;
+    }
+
+    @Override
+    public Sound getSwimSound() {
+        return null;
+    }
+
+    @Override
+    public Sound getSwimSplashSound() {
+        return null;
+    }
+
+    @Override
+    public Sound getSwimHighSpeedSplashSound() {
         return null;
     }
 
@@ -1419,6 +1959,21 @@ class FakePlayer implements Player {
 
     @Override
     public PistonMoveReaction getPistonMoveReaction() {
+        return null;
+    }
+
+    @Override
+    public BlockFace getFacing() {
+        return null;
+    }
+
+    @Override
+    public Pose getPose() {
+        return null;
+    }
+
+    @Override
+    public SpawnCategory getSpawnCategory() {
         return null;
     }
 
@@ -1535,6 +2090,11 @@ class FakePlayer implements Player {
 
     @Override
     public <T extends Projectile> T launchProjectile(Class<? extends T> projectile, Vector velocity) {
+        return null;
+    }
+
+    @Override
+    public PersistentDataContainer getPersistentDataContainer() {
         return null;
     }
 }

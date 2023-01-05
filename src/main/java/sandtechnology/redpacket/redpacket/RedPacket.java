@@ -19,7 +19,16 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,8 +41,13 @@ import static sandtechnology.redpacket.util.EcoAndPermissionHelper.getEco;
 import static sandtechnology.redpacket.util.IdiomManager.getIdiomPinyin;
 import static sandtechnology.redpacket.util.IdiomManager.isValidSequence;
 import static sandtechnology.redpacket.util.JsonHelper.getGson;
-import static sandtechnology.redpacket.util.MessageHelper.*;
-import static sandtechnology.redpacket.util.OperatorHelper.*;
+import static sandtechnology.redpacket.util.MessageHelper.broadcastMsg;
+import static sandtechnology.redpacket.util.MessageHelper.sendServiceMsg;
+import static sandtechnology.redpacket.util.MessageHelper.sendSimpleMsg;
+import static sandtechnology.redpacket.util.OperatorHelper.add;
+import static sandtechnology.redpacket.util.OperatorHelper.divide;
+import static sandtechnology.redpacket.util.OperatorHelper.multiply;
+import static sandtechnology.redpacket.util.OperatorHelper.toTwoPrecision;
 import static sandtechnology.redpacket.util.RedPacketManager.getRedPacketManager;
 
 /**
@@ -213,12 +227,16 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
      * 红包过期自动退款
      */
     synchronized public void refundIfExpired() {
-        if (System.currentTimeMillis() > expireTime && !expired && amount != 0 && getInstance().getConfig().getBoolean("RedPacket.Expired")) {
-            sendServiceMsg(player, ChatColor.GREEN, "您的红包已过期，已退还" + getCurrentMoney() + "元");
-            getEco().depositPlayer(player, getCurrentMoney());
-            expired = true;
-            getDatabaseManager().update(this);
-            getRedPacketManager().remove(this);
+        try {
+            if (System.currentTimeMillis() > expireTime && !expired && amount != 0 && getInstance().getConfig().getBoolean("RedPacket.Expired")) {
+                sendServiceMsg(player, ChatColor.GREEN, "您的红包已过期，已退还" + getCurrentMoney() + "元");
+                getEco().depositPlayer(player, getCurrentMoney());
+                expired = true;
+                getDatabaseManager().update(this);
+                getRedPacketManager().remove(this);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("红包退还失败！", e);
         }
     }
 
@@ -245,7 +263,7 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
     /**
      * 给予红包给对应玩家
      * 使用算法：微信红包的随机算法是怎样实现的？ - 陈鹏的回答 - 知乎
-     * https://www.zhihu.com/question/22625187/answer/85530416
+     * <a href="https://www.zhihu.com/question/22625187/answer/85530416">点击这里</a>
      *
      * @param player 要给予红包的玩家
      */
@@ -255,7 +273,7 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
         }
 
         int value;
-        if (amount != 1) {
+        if (amount >= 1) {
             if (giveType.equals(GiveType.LuckyAmount)) {
                 //Math.max((int)(toTwoPrecision(random.nextDouble())/((money/amount)*2),1)
                 //你问为什么不乘0.01？random.nextDouble()已经帮我乘了233

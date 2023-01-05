@@ -2,12 +2,13 @@ package sandtechnology.redpacket.util;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 
 /**
  * 精确计算工具类
  */
 public class OperatorHelper {
-    private static final MathContext mathContext = MathContext.DECIMAL32;
+    private static final MathContext mathContext = new MathContext(7, RoundingMode.HALF_DOWN);
 
     private OperatorHelper() {
     }
