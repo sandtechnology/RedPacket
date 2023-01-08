@@ -273,7 +273,7 @@ public class RedPacket implements Comparator<RedPacket>, Comparable<RedPacket> {
         }
 
         int value;
-        if (amount >= 1) {
+        if (amount > 1) {
             if (giveType.equals(GiveType.LuckyAmount)) {
                 //Math.max((int)(toTwoPrecision(random.nextDouble())/((money/amount)*2),1)
                 //你问为什么不乘0.01？random.nextDouble()已经帮我乘了233
